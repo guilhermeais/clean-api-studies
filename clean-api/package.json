@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --passWithNoTests",
-    "test:staged": "npm run test",
-    "test:watch": "npm run test -- --watch"
+    "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
+    "test:verbose": "jest --passWithNoTests --runInBand",
+    "test:unit": "npm run test -- --watch -c jest-unit-config.js",
+    "test:integration": "npm run test -- --watch -c jest-integration-config.js",
+    "test:staged": "npm run test --findRelatedTests",
+    "test:ci": "npm run test -- --coverage"
   },
   "keywords": [],
   "author": "",
