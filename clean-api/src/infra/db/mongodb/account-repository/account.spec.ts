@@ -8,7 +8,7 @@ describe('Account Mongo Repository', () => {
   })
 
   afterAll(async () => {
-    await MongoHelper.diconnect()
+    await MongoHelper.disconnect()
   })
 
   test('Should return an account on success', async () => {
