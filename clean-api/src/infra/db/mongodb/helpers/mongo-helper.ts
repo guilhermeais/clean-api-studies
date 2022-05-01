@@ -1,25 +1,30 @@
 import { Collection, MongoClient } from 'mongodb'
 
 export const MongoHelper = {
-  client: null as MongoClient | null,
-
+  client: null as MongoClient,
+  uri: null as string,
   async connect (uri: string): Promise<void> {
+    this.uri = uri
     this.client = await MongoClient.connect(uri)
   },
 
-  async diconnect (): Promise<void> {
+  async disconnect (): Promise<void> {
     this.client.close()
+    this.client = null
   },
 
-  getCollection (name: string): Collection {
+  async getCollection (name: string): Promise<Collection> {
+    if (!this.client) {
+      await this.connect(this.uri)
+    }
     return this.client.db().collection(name)
   },
 
-  map: (accountData: any): any => {
-    const { _id, ...accountWithoutId } = accountData
-    const account = Object.assign({}, accountWithoutId, { id: _id.toHexString() })
+  map: (collectionData: any): any => {
+    const { _id, ...collectionWithoutId } = collectionData
+    const collection = Object.assign({}, collectionWithoutId, { id: _id.toHexString() })
 
-    return account
+    return collection
   }
 
 }
