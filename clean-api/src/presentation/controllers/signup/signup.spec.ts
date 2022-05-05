@@ -21,25 +21,28 @@ function makeEmailValidator (): EmailValidator {
 }
 
 function makeFakeRequest (): HttpRequest {
+  const account = makeFakeAccount()
   return {
     body: {
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password',
-      passwordConfirmation: 'any_password'
+      ...account,
+      passwordConfirmation: account.password
     }
+  }
+}
+
+function makeFakeAccount (): AccountModel {
+  return {
+    id: 'valid_id',
+    name: 'valid_name',
+    email: 'valid_email@mail.com',
+    password: 'valid_password'
   }
 }
 
 function makeAddAccount (): AddAccount {
   class AddAccountStub implements AddAccount {
     async add (account: AddAccountModel): Promise<AccountModel> {
-      const fakeAccount = {
-        id: 'valid_id',
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password'
-      }
+      const fakeAccount = makeFakeAccount()
 
       return await Promise.resolve(fakeAccount)
     }
@@ -190,24 +193,9 @@ describe('SignUp Controller', () => {
 
   test('Should return 200 if valid data is provided', async () => {
     const { sut } = makeSut()
-    const userMock = {
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'valid_password',
-      passwordConfirmation: 'valid_password'
-    }
 
-    const httpRequest = {
-      body: {
-        ...userMock
-      }
-    }
+    const httpRequest = makeFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(ok({
-      id: 'valid_id',
-      name: userMock.name,
-      email: userMock.email,
-      password: userMock.password
-    }))
+    expect(httpResponse).toEqual(ok(makeFakeAccount()))
   })
 })

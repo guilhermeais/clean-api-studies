@@ -1,8 +1,35 @@
 import { LogErrorRepository } from '../../data/potocols/log-error-repository'
-import { serverError } from '../../presentation/helpers/http-helper'
+import { AccountModel } from '../../domain/models/account'
+import { ok, serverError } from '../../presentation/helpers/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
 import { LogControllerDecorator } from './log'
 
+function makeFakeRequest (): HttpRequest {
+  const account = makeFakeAccount()
+  return {
+    body: {
+      ...account,
+      passwordConfirmation: account.password
+    }
+  }
+}
+
+function makeFakeAccount (): AccountModel {
+  return {
+    id: 'valid_id',
+    name: 'valid_name',
+    email: 'valid_email@mail.com',
+    password: 'valid_password'
+  }
+}
+
+function makeFakeServerError (): HttpResponse {
+  const fakeError = new Error()
+  fakeError.stack = 'any_stack'
+  const httpErrorResponse = serverError(fakeError)
+
+  return httpErrorResponse
+}
 interface SutTypes {
   sut: LogControllerDecorator
   controllerStub: Controller
@@ -22,17 +49,7 @@ function makeLogErrorRepository (): LogErrorRepository {
 function makeController (): Controller {
   class ControllerStub implements Controller {
     async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-      const httpResponse: HttpResponse = {
-        statusCode: 200,
-        body: {
-          email: 'some_email@mail.com',
-          name: 'some_Name',
-          password: 'some_password',
-          passwordConfirmation: 'some_password'
-        }
-      }
-
-      return await Promise.resolve(httpResponse)
+      return await Promise.resolve(ok(makeFakeAccount()))
     }
   }
 
@@ -52,57 +69,26 @@ describe('LogController Decorator', () => {
   test('Should call controller handle', async () => {
     const { sut, controllerStub } = makeSut()
     jest.spyOn(controllerStub, 'handle')
-    const httpRequest = {
-      body: {
-        email: 'some_email@mail.com',
-        name: 'some_Name',
-        password: 'some_password',
-        passwordConfirmation: 'some_password'
-      }
-    }
+    const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
     expect(controllerStub.handle).toHaveBeenCalledWith(httpRequest)
   })
 
   test('Should return the smae result of the controller handle', async () => {
     const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        email: 'some_email@mail.com',
-        name: 'some_Name',
-        password: 'some_password',
-        passwordConfirmation: 'some_password'
-      }
-    }
+    const httpRequest = makeFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual({
-      statusCode: 200,
-      body: {
-        email: 'some_email@mail.com',
-        name: 'some_Name',
-        password: 'some_password',
-        passwordConfirmation: 'some_password'
-      }
-    })
+    expect(httpResponse).toEqual(ok(makeFakeAccount()))
   })
 
   test('Should call LogErrorRepository with correct error if controller returns a server error', async () => {
     const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
-    const fakeError = new Error()
-    fakeError.stack = 'any_stack'
-    const httpErrorResponse = serverError(fakeError)
+    const serverError = makeFakeServerError()
     jest.spyOn(logErrorRepositoryStub, 'log')
-    jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce(httpErrorResponse)
-    const httpRequest = {
-      body: {
-        email: 'some_email@mail.com',
-        name: 'some_Name',
-        password: 'some_password',
-        passwordConfirmation: 'some_password'
-      }
-    }
+    jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce(serverError)
+    const httpRequest = makeFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
-    expect(logErrorRepositoryStub.log).toHaveBeenCalledWith(fakeError.stack)
-    expect(httpResponse).toEqual(httpErrorResponse)
+    expect(logErrorRepositoryStub.log).toHaveBeenCalledWith(serverError.body.stack)
+    expect(httpResponse).toEqual(serverError)
   })
 })
