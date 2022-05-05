@@ -38,7 +38,7 @@ interface SutTypes {
 
 function makeLogErrorRepository (): LogErrorRepository {
   class LogErrorRepositoryStub implements LogErrorRepository {
-    async log (stack: string): Promise<void> {
+    async logError (stack: string): Promise<void> {
       await Promise.resolve()
     }
   }
@@ -74,7 +74,7 @@ describe('LogController Decorator', () => {
     expect(controllerStub.handle).toHaveBeenCalledWith(httpRequest)
   })
 
-  test('Should return the smae result of the controller handle', async () => {
+  test('Should return the same result of the controller handle', async () => {
     const { sut } = makeSut()
     const httpRequest = makeFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
@@ -84,11 +84,11 @@ describe('LogController Decorator', () => {
   test('Should call LogErrorRepository with correct error if controller returns a server error', async () => {
     const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
     const serverError = makeFakeServerError()
-    jest.spyOn(logErrorRepositoryStub, 'log')
+    jest.spyOn(logErrorRepositoryStub, 'logError')
     jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce(serverError)
     const httpRequest = makeFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
-    expect(logErrorRepositoryStub.log).toHaveBeenCalledWith(serverError.body.stack)
+    expect(logErrorRepositoryStub.logError).toHaveBeenCalledWith(serverError.body.stack)
     expect(httpResponse).toEqual(serverError)
   })
 })
