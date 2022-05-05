@@ -1,9 +1,22 @@
+import { LogErrorRepository } from '../../data/potocols/log-error-repository'
+import { serverError } from '../../presentation/helpers/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
 import { LogControllerDecorator } from './log'
 
 interface SutTypes {
   sut: LogControllerDecorator
   controllerStub: Controller
+  logErrorRepositoryStub: LogErrorRepository
+}
+
+function makeLogErrorRepository (): LogErrorRepository {
+  class LogErrorRepositoryStub implements LogErrorRepository {
+    async log (stack: string): Promise<void> {
+      await Promise.resolve()
+    }
+  }
+
+  return new LogErrorRepositoryStub()
 }
 
 function makeController (): Controller {
@@ -28,10 +41,11 @@ function makeController (): Controller {
 
 function makeSut (): SutTypes {
   const controllerStub = makeController()
-  const sut = new LogControllerDecorator(controllerStub)
+  const logErrorRepositoryStub = makeLogErrorRepository()
+  const sut = new LogControllerDecorator(controllerStub, logErrorRepositoryStub)
 
   return {
-    sut, controllerStub
+    sut, controllerStub, logErrorRepositoryStub
   }
 }
 describe('LogController Decorator', () => {
@@ -70,5 +84,25 @@ describe('LogController Decorator', () => {
         passwordConfirmation: 'some_password'
       }
     })
+  })
+
+  test('Should call LogErrorRepository with correct error if controller returns a server error', async () => {
+    const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
+    const fakeError = new Error()
+    fakeError.stack = 'any_stack'
+    const httpErrorResponse = serverError(fakeError)
+    jest.spyOn(logErrorRepositoryStub, 'log')
+    jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce(httpErrorResponse)
+    const httpRequest = {
+      body: {
+        email: 'some_email@mail.com',
+        name: 'some_Name',
+        password: 'some_password',
+        passwordConfirmation: 'some_password'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(logErrorRepositoryStub.log).toHaveBeenCalledWith(fakeError.stack)
+    expect(httpResponse).toEqual(httpErrorResponse)
   })
 })
