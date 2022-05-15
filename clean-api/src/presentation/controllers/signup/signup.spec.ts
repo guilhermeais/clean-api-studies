@@ -104,7 +104,7 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toEqual(ok(makeFakeAccount()))
   })
 
-  test('Should call Validation with correct email', async () => {
+  test('Should call Validation with correct value', async () => {
     const { sut, validationStub } = makeSut()
     jest.spyOn(validationStub, 'validate')
     const httpRequest = makeFakeRequest()
