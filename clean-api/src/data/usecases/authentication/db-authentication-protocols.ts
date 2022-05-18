@@ -1,5 +1,5 @@
 export * from '../../potocols/criptography/hash-comparer'
-export * from '../../potocols/criptography/token-generator'
+export * from '../../potocols/criptography/encrypter'
 export * from '../../potocols/db/load-account-by-email-repository'
 export * from '../../potocols/db/update-access-token-repository'
 export * from '../add-account/db-add-account-protocols'
