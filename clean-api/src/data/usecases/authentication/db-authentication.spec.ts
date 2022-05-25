@@ -27,7 +27,7 @@ function makeFakeAuthentication (): AuthenticationModel {
 
 function makeLoadAccountEmailByRepository (): LoadAccountByEmailRepository {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    async load (email: string): Promise<AccountModel> {
+    async loadByEmail (email: string): Promise<AccountModel> {
       return await Promise.resolve(makeFakeAccount())
     }
   }
@@ -95,16 +95,16 @@ function makeSut (): SutTypes {
 describe('DbAuthentication UseCase', () => {
   test('Should call LoadAccountByEmailRepository with correct email', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
-    jest.spyOn(loadAccountByEmailRepositoryStub, 'load')
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
     await sut.auth(makeFakeAuthentication())
 
-    expect(loadAccountByEmailRepositoryStub.load).toHaveBeenCalledWith('any_email@mail.com')
+    expect(loadAccountByEmailRepositoryStub.loadByEmail).toHaveBeenCalledWith('any_email@mail.com')
   })
 
   test('Should throw if LoadAccountByEmailRepository throws', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
     const mockError = new Error('some_error')
-    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockRejectedValueOnce(mockError)
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockRejectedValueOnce(mockError)
     const authPromise = sut.auth(makeFakeAuthentication())
 
     await expect(authPromise).rejects.toThrow(mockError)
@@ -112,7 +112,7 @@ describe('DbAuthentication UseCase', () => {
 
   test('Should return null if LoadAccountByEmailRepository returns null', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut()
-    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockResolvedValueOnce(null)
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockResolvedValueOnce(null)
     const accessToken = await sut.auth(makeFakeAuthentication())
 
     expect(accessToken).toBeNull()
