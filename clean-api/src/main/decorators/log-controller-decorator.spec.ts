@@ -1,8 +1,8 @@
-import { LogErrorRepository } from '../../data/potocols/db/log-error-repository'
+import { LogErrorRepository } from '../../data/potocols/db/log/log-error-repository'
 import { AccountModel } from '../../domain/models/account'
 import { ok, serverError } from '../../presentation/helpers/http/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
-import { LogControllerDecorator } from './log'
+import { LogControllerDecorator } from './log-controller-decorator'
 
 function makeFakeRequest (): HttpRequest {
   const account = makeFakeAccount()

@@ -1,4 +1,4 @@
-import { AccountModel } from '../../controllers/signup/signup-protocols'
+import { AccountModel } from '../../controllers/signup/signup-controller-protocols'
 import { InvalidParamError } from '../../errors'
 import { HttpRequest } from '../../protocols'
 import { EmailValidator } from '../../protocols/email-validator'
