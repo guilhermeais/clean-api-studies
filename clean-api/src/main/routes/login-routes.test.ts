@@ -35,7 +35,7 @@ describe('Login Routes', () => {
   })
 
   describe('POST /login', () => {
-    test('Should return 200 on signup', async () => {
+    test('Should return 200 on login', async () => {
       const password = '123'
       const passwordHashed = await hash(password, 12)
       const mockAccount = {
@@ -52,6 +52,16 @@ describe('Login Routes', () => {
           password: password
         })
         .expect(200)
+    })
+
+    test('Should return 401 on signup', async () => {
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'guilhermeteixeiraais@gmail.com',
+          password: '123'
+        })
+        .expect(401)
     })
   })
 })
