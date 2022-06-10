@@ -1,12 +1,14 @@
 import { Express, Router } from 'express'
-import fg from 'fast-glob'
-
+import { readdirSync } from 'fs'
+import { join } from 'path'
 function getAllRoutesFileFromRoutesFolder (): string[] {
-  return fg.sync('**/src/main/routes/**routes.ts')
+  const routePath = join(__dirname, '../', '/routes')
+  const routesFiles = (readdirSync(routePath)).filter(file => (!file.includes('.test.')))
+  return routesFiles
 }
 
 async function getRouterFromRouteFile (routerFilePath: string): Promise<Function> {
-  const route = (await import(`../../../${routerFilePath}`)).default
+  const route = (await import(`../routes/${routerFilePath}`)).default
   return route as Function
 }
 

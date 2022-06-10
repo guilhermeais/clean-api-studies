@@ -1,6 +1,6 @@
 const path = require('path')
 
-const tsConfigFile = path.resolve(__dirname, 'tsconfig.json')
+const tsConfigFile = path.resolve(__dirname, 'tsconfig.eslint.json')
 module.exports = {
   extends: 'standard-with-typescript',
   parserOptions: {
