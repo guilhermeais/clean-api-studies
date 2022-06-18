@@ -1,9 +1,18 @@
 import { Express, Router } from 'express'
 import { readdirSync } from 'fs'
 import { join } from 'path'
+
+function isTestFile (fileName): boolean {
+  return fileName.indexOf('test') > -1 || fileName.indexOf('spec') > -1
+}
+
+function isValidRouteFile (file: string): boolean {
+  return (file.endsWith('.js') || file.endsWith('.ts')) && !isTestFile(file)
+}
+
 function getAllRoutesFileFromRoutesFolder (): string[] {
   const routePath = join(__dirname, '../', '/routes')
-  const routesFiles = (readdirSync(routePath)).filter(file => (!file.includes('.test.')))
+  const routesFiles = (readdirSync(routePath)).filter(isValidRouteFile)
   return routesFiles
 }
 
