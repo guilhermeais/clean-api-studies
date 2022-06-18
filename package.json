@@ -11,7 +11,7 @@
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:unit": "npm run test -- --watchAll -c jest-unit-config.js",
     "test:integration": "npm run test -- --watch -c jest-integration-config.js",
-    "test:staged": "npm run test --findRelatedTests",
+    "test:staged": "npm run test -- --findRelatedTests",
     "test:ci": "npm run test -- --coverage"
   },
   "keywords": [],
@@ -50,5 +50,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.5.0",
     "validator": "^13.7.0"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
