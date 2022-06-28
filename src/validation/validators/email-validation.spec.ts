@@ -1,7 +1,7 @@
-import { AccountModel } from '../../controllers/signup/signup-controller-protocols'
-import { InvalidParamError } from '../../errors'
-import { HttpRequest } from '../../protocols'
-import { EmailValidator } from '../../protocols/email-validator'
+import { AccountModel } from '../../presentation/controllers/signup/signup-controller-protocols'
+import { InvalidParamError } from '../../presentation/errors'
+import { HttpRequest } from '../../presentation/protocols'
+import { EmailValidator } from '../protocols/email-validator'
 import { EmailValidation } from './email-validation'
 
 interface SutTypes {
