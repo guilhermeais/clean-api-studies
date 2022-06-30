@@ -49,7 +49,7 @@ describe('AddSurvey Controller', () => {
     expect(validationStub.validate).toHaveBeenCalledWith(httpRequest.body)
   })
 
-  test('Should return 500 if Validation fails', async () => {
+  test('Should return badRequest if Validation fails', async () => {
     const { sut, validationStub } = makeSut()
     const errorMock = new Error('some_error')
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMock)
