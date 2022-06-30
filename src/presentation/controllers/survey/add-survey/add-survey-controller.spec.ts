@@ -13,16 +13,35 @@ function makeFakeRequest (): HttpRequest {
     }
   }
 }
+
+function makeValition (): Validation {
+  class ValidationStub implements Validation {
+    validate (input: any): Error | undefined {
+      return undefined
+    }
+  }
+
+  return new ValidationStub()
+}
+
+interface SutTypes {
+  sut: AddSurveyController
+  validationStub: Validation
+}
+
+function makeSut (): SutTypes {
+  const validationStub = makeValition()
+  const sut = new AddSurveyController(validationStub)
+
+  return {
+    sut,
+    validationStub
+  }
+}
 describe('AddSurvey Controller', () => {
   test('Should call Validation with correct values', async () => {
-    class ValidationStub implements Validation {
-      validate (input: any): Error | undefined {
-        return undefined
-      }
-    }
-    const validationStub = new ValidationStub()
+    const { sut, validationStub } = makeSut()
     jest.spyOn(validationStub, 'validate')
-    const sut = new AddSurveyController(validationStub)
     const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
 
