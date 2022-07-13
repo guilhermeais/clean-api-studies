@@ -1,4 +1,5 @@
 [![Build Status](https://app.travis-ci.com/guilhermeais/clean-api-studies.svg?branch=master)](https://app.travis-ci.com/guilhermeais/clean-api-studies)
+[![Coverage Status](https://coveralls.io/repos/github/guilhermeais/clean-api-studies/badge.svg)](https://coveralls.io/github/guilhermeais/clean-api-studies)
 # Clean Node API
 ### Estudos sobre [SOLID, TDD, Clean Archtecture](https://www.udemy.com/course/tdd-com-mango/).
 
