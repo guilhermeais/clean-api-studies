@@ -33,7 +33,14 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     const accountMongo = await accountCollection.findOne(
       {
         accessToken: token,
-        role
+        $or: [
+          {
+            role
+          },
+          {
+            role: 'admin'
+          }
+        ]
       }
     )
 
