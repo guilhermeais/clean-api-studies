@@ -1,6 +1,6 @@
-import { Decrypter } from '../../potocols/criptography/decrypter'
+import { Decrypter } from '../../protocols/criptography/decrypter'
 import { AccountModel } from '../add-account/db-add-account-protocols'
-import { LoadAccountByTokenRepository } from '../../potocols/db/account/load-account-by-token-repository'
+import { LoadAccountByTokenRepository } from '../../protocols/db/account/load-account-by-token-repository'
 import { DbLoadAccountByToken } from './db-load-account-by-token'
 
 function makeDecrypter (): Decrypter {

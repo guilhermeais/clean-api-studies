@@ -1,5 +1,5 @@
 import { SurveyModel } from '../../../domain/models/survey'
-import { LoadSurveysRepository } from '../../potocols/db/survey/load-surveys-repository'
+import { LoadSurveysRepository } from '../../protocols/db/survey/load-surveys-repository'
 import { DbLoadSurveys } from './db-load-surveys'
 function makeFakeSurveys (): SurveyModel[] {
   return [
