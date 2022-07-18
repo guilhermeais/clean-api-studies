@@ -1,6 +1,6 @@
-import { AccountModel } from '../../presentation/controllers/login/signup/signup-controller-protocols'
-import { InvalidParamError } from '../../presentation/errors'
-import { HttpRequest } from '../../presentation/protocols'
+import { AccountModel } from '@/presentation/controllers/login/signup/signup-controller-protocols'
+import { InvalidParamError } from '@/presentation/errors'
+import { HttpRequest } from '@/presentation/protocols'
 import { EmailValidator } from '../protocols/email-validator'
 import { EmailValidation } from './email-validation'
 

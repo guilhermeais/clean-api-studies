@@ -1,5 +1,5 @@
-import { InvalidParamError, MissingParamError } from '../../presentation/errors'
-import { Validation } from '../../presentation/protocols/validation'
+import { InvalidParamError, MissingParamError } from '@/presentation/errors'
+import { Validation } from '@/presentation/protocols/validation'
 import { ValidationComposite } from './validation-composite'
 
 function makeValidation (): Validation {

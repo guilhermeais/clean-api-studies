@@ -1,0 +1,1 @@
+{"version":"1.4.0","name":"clean-api","dependencies":{"bcrypt":{"version":"5.0.1"},"express":{"version":"4.18.1"},"jsonwebtoken":{"version":"8.5.1"},"mongodb":{"version":"4.7.0"},"nodemon":{"version":"2.0.16"},"validator":{"version":"13.7.0"}}}

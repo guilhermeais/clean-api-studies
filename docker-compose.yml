@@ -17,6 +17,7 @@ services:
     volumes:
       - ./dist/:/usr/src/clean-node-api/dist/
       - ./package.json:/usr/src/clean-node-api/package.json
+      - ./src/:/usr/src/clean-node-api/src/
     ports:
       - "5050:5050"
       - "9222:9222" # Porta para o socket do debugger
