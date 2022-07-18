@@ -8,6 +8,30 @@ import env from '../config/env'
 let surveyCollection: Collection
 let accountCollection: Collection
 
+async function makeAccessToken (role?: string): Promise<string> {
+  const result = await accountCollection.insertOne({
+    name: 'Guilherme Teixeira Ais',
+    email: 'guilherme.teixeira@gmail.com',
+    password: 'somePassword',
+    ...(role && { role })
+  })
+  const id = result.insertedId
+  const accessToken = sign({ id: id.toString() }, env.jwtSecret)
+
+  await accountCollection.updateOne(
+    {
+      _id: id
+    },
+    {
+      $set: {
+        accessToken
+      }
+    }
+  )
+
+  return accessToken
+}
+
 describe('Survey Routes', () => {
   beforeAll(async () => {
     const mongoURL = process.env.MONGO_URL ?? ''
@@ -46,24 +70,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 403 on add survey with invalid role', async () => {
-      const result = await accountCollection.insertOne({
-        name: 'Guilherme Teixeira Ais',
-        email: 'guilherme.teixeira@gmail.com',
-        password: 'somePassword'
-      })
-      const id = result.insertedId
-      const accessToken = sign({ id: id.toString() }, env.jwtSecret)
-
-      await accountCollection.updateOne(
-        {
-          _id: id
-        },
-        {
-          $set: {
-            accessToken
-          }
-        }
-      )
+      const accessToken = await makeAccessToken()
 
       await request(app)
         .post('/api/surveys')
@@ -84,25 +91,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 204 on add survey with valid access token', async () => {
-      const result = await accountCollection.insertOne({
-        name: 'Guilherme Teixeira Ais',
-        email: 'guilherme.teixeira@gmail.com',
-        password: 'somePassword',
-        role: 'admin'
-      })
-      const id = result.insertedId
-      const accessToken = sign({ id: id.toString() }, env.jwtSecret)
-
-      await accountCollection.updateOne(
-        {
-          _id: id
-        },
-        {
-          $set: {
-            accessToken
-          }
-        }
-      )
+      const accessToken = await makeAccessToken('admin')
 
       await request(app)
         .post('/api/surveys')
@@ -145,24 +134,7 @@ describe('Survey Routes', () => {
           ]
         }
       ])
-      const result = await accountCollection.insertOne({
-        name: 'Guilherme Teixeira Ais',
-        email: 'guilherme.teixeira@gmail.com',
-        password: 'somePassword'
-      })
-      const id = result.insertedId
-      const accessToken = sign({ id: id.toString() }, env.jwtSecret)
-
-      await accountCollection.updateOne(
-        {
-          _id: id
-        },
-        {
-          $set: {
-            accessToken
-          }
-        }
-      )
+      const accessToken = await makeAccessToken()
 
       await request(app)
         .get('/api/surveys')
