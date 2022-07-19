@@ -7,7 +7,8 @@ module.exports = {
     project: tsConfigFile
   },
   rules: {
-    '@typescript-eslint/strict-boolean-expressions': 'off'
+    '@typescript-eslint/strict-boolean-expressions': 'off',
+    '@typescript-eslint/consistent-type-definitions': 'off'
   },
   root: true
 }
