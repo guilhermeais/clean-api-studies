@@ -80,6 +80,7 @@ describe('Survey Mongo Repository', () => {
       const sut = makeSut()
       const surveys = await sut.loadAll()
       expect(surveys.length).toBe(2)
+      expect(surveys[0].id).toBeTruthy()
       expect(surveys[0].question).toBe(surveysMock[0].question)
       expect(surveys[1].question).toBe(surveysMock[1].question)
     })
@@ -109,6 +110,7 @@ describe('Survey Mongo Repository', () => {
       const { insertedId } = await surveyCollection.insertOne(surveyMock)
       const sut = makeSut()
       const survey = await sut.loadById(insertedId.toString())
+      expect(survey.id).toBeTruthy()
       expect(survey.question).toBe(surveyMock.question)
     })
 

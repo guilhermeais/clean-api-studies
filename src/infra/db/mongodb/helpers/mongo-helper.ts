@@ -25,6 +25,9 @@ export const MongoHelper = {
     const collection = Object.assign({}, collectionWithoutId, { id: _id.toHexString() })
 
     return collection
-  }
+  },
 
+  mapCollection: (collection: []): any[] => {
+    return collection.map(MongoHelper.map)
+  }
 }
