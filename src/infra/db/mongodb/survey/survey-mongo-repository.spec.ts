@@ -90,4 +90,26 @@ describe('Survey Mongo Repository', () => {
       expect(surveys.length).toBe(0)
     })
   })
+  describe('loadById()', () => {
+    test('Should load survey by id on success', async () => {
+      const surveyMock = {
+        question: 'any_question',
+        answers: [
+          {
+            answer: 'any_answer',
+            image: 'any_image'
+          },
+          {
+            answer: 'any_answer'
+          }
+        ],
+        date: new Date()
+      }
+
+      const { insertedId } = await surveyCollection.insertOne(surveyMock)
+      const sut = makeSut()
+      const survey = await sut.loadById(insertedId.toString())
+      expect(survey.question).toBe(surveyMock.question)
+    })
+  })
 })
