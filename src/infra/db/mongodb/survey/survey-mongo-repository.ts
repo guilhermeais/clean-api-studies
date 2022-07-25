@@ -18,8 +18,12 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
   }
 
   async loadById (id: string): Promise<SurveyModel> {
-    const surveyCollection = await MongoHelper.getCollection('surveys')
-    const survey = (await surveyCollection.findOne({ _id: ObjectId.createFromHexString(id) }) as unknown) as SurveyModel
-    return survey
+    if (id && id.length >= 24) {
+      const surveyCollection = await MongoHelper.getCollection('surveys')
+      const survey = (await surveyCollection.findOne({ _id: ObjectId.createFromHexString(id) }) as unknown) as SurveyModel
+      return survey
+    }
+
+    return null
   }
 }
