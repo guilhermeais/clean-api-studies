@@ -1,7 +1,7 @@
 import { DbAuthentication } from './db-authentication'
 
 import {
-  AuthenticationModel,
+  AuthenticationParams,
   HashComparer,
   Encrypter,
   LoadAccountByEmailRepository,
@@ -18,7 +18,7 @@ function makeFakeAccount (): AccountModel {
   }
 }
 
-function makeFakeAuthentication (): AuthenticationModel {
+function makeFakeAuthentication (): AuthenticationParams {
   return {
     email: 'any_email@mail.com',
     password: 'any_password'

@@ -7,7 +7,7 @@ import {
   SurveyModel,
   SaveSurveyResult,
   SurveyResultModel,
-  SaveSurveyResultModel
+  SaveSurveyResultParams
 } from './save-survey-result-controller-protocols'
 import MockDate from 'mockdate'
 
@@ -62,7 +62,7 @@ function makeSaveSurveyResultModel (): SurveyResultModel {
 
 function makeSaveSurveyResult (): SaveSurveyResult {
   class SaveSurveyResultStub implements SaveSurveyResult {
-    async save (data: SaveSurveyResultModel): Promise<SurveyResultModel> {
+    async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
       return await Promise.resolve(makeSaveSurveyResultModel())
     }
   }

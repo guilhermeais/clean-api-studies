@@ -3,12 +3,12 @@ import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/h
 import { SignUpController } from './signup-controller'
 import {
   AddAccount,
-  AddAccountModel,
+  AddAccountParams,
   AccountModel,
   HttpRequest,
   Validation,
   Authentication,
-  AuthenticationModel
+  AuthenticationParams
 } from './signup-controller-protocols'
 
 type SutTypes = {
@@ -50,7 +50,7 @@ function makeFakeAccount (): AccountModel {
 
 function makeAddAccount (): AddAccount {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AccountModel> {
+    async add (account: AddAccountParams): Promise<AccountModel> {
       const fakeAccount = makeFakeAccount()
 
       return await Promise.resolve(fakeAccount)
@@ -62,7 +62,7 @@ function makeAddAccount (): AddAccount {
 
 function makeAuthentication (): Authentication {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationModel): Promise<string> {
+    async auth (authentication: AuthenticationParams): Promise<string> {
       return await Promise.resolve('any_token')
     }
   }

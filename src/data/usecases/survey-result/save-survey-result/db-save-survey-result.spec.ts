@@ -1,7 +1,7 @@
 import { DbSaveSurveyResult } from './db-save-survey-result'
 
 import {
-  SaveSurveyResultModel,
+  SaveSurveyResultParams,
   SurveyResultModel,
   SaveSurveyResultRepository
 } from './db-save-survey-result-protocols'
@@ -12,7 +12,7 @@ function makeFakeSurveyResult (): SurveyResultModel {
   return Object.assign({}, makeFakeSurveyResultData(), { id: 'any_id' })
 }
 
-function makeFakeSurveyResultData (): SaveSurveyResultModel {
+function makeFakeSurveyResultData (): SaveSurveyResultParams {
   return {
     accountId: 'any_account_id',
     surveyId: 'any_survey_id',
@@ -23,7 +23,7 @@ function makeFakeSurveyResultData (): SaveSurveyResultModel {
 
 function makeSaveSurveyRepository (): SaveSurveyResultRepository {
   class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
-    async save (data: SaveSurveyResultModel): Promise<SurveyResultModel> {
+    async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
       return await Promise.resolve(makeFakeSurveyResult())
     }
   }
