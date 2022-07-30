@@ -4,7 +4,9 @@ import { Controller, HttpRequest } from '@/presentation/protocols'
 export function adaptRoute (controller: Controller) {
   return async function (req: Request, res: Response): Promise<void> {
     const httpRequest: HttpRequest = {
-      body: req.body
+      body: req.body,
+      params: req.params,
+      accountId: req.accountId
     }
     try {
       const httpResponse = await controller.handle(httpRequest)
