@@ -1,11 +1,17 @@
 import { InvalidParamError } from '@/presentation/errors'
 import { forbidden, serverError } from '@/presentation/helpers/http/http-helper'
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { HttpRequest, LoadSurveyById, SurveyModel } from './save-survey-result-controller-protocols'
+import {
+  HttpRequest,
+  LoadSurveyById,
+  SurveyModel
+} from './save-survey-result-controller-protocols'
 
 function makeFakeRequest (): HttpRequest {
   return {
-    body: {},
+    body: {
+      answer: 'any_answer'
+    },
     params: {
       surveyId: 'any_survey_id'
     }
@@ -22,7 +28,7 @@ function makeSurvey (): SurveyModel {
         image: 'any_image'
       },
       {
-        answer: 'any_answer'
+        answer: 'any_other_answer'
       }
     ],
     date: new Date()
@@ -79,5 +85,19 @@ describe('SaveSurveyResult Controller', () => {
     const httpRequest = {}
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(serverError(errorMock))
+  })
+
+  test('Should return 403 if an invalid answer is provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle({
+      body: {
+        answer: 'invalid_answer'
+      },
+      params: {
+        surveyId: 'any_survey_id'
+      }
+    })
+
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('answer')))
   })
 })
