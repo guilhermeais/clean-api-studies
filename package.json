@@ -17,8 +17,8 @@
     "test:ci": "npm run test -- --coverage",
     "test:coveralls": "npm run test:ci && coveralls < coverage/lcov.info"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["typescript", "tdd", "api", "rest", "clean", "node"],
+  "author": "Guilherme Teixeira Ais",
   "license": "ISC",
   "devDependencies": {
     "@shelf/jest-mongodb": "^2.2.2",
