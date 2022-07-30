@@ -1,3 +1,4 @@
+import { mockAddAccountParams } from '@/domain/test'
 import { Collection } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account-mongo-repository'
@@ -21,11 +22,7 @@ describe('Account Mongo Repository', () => {
   describe('add()', () => {
     test('Should return an account on add success', async () => {
       const sut = new AccountMongoRepository()
-      const mockAccountInput = {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password'
-      }
+      const mockAccountInput = mockAddAccountParams()
       const account = await sut.add(mockAccountInput)
 
       expect(account).toBeTruthy()
@@ -38,13 +35,10 @@ describe('Account Mongo Repository', () => {
   describe('loadByEmail', () => {
     test('Should return an account on loadByEmail success', async () => {
       const sut = new AccountMongoRepository()
-      const mockAccountInput = {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password'
-      }
+      const mockAccountInput = mockAddAccountParams()
+
       await accountCollection.insertOne(mockAccountInput)
-      const account = await sut.loadByEmail('valid_email@mail.com')
+      const account = await sut.loadByEmail(mockAccountInput.email)
 
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
@@ -56,7 +50,7 @@ describe('Account Mongo Repository', () => {
     test('Should return null if loadByEmail fails', async () => {
       const sut = new AccountMongoRepository()
 
-      const account = await sut.loadByEmail('valid_email@mail.com')
+      const account = await sut.loadByEmail('any_email@mail.com')
 
       expect(account).toBeFalsy()
     })
@@ -64,11 +58,8 @@ describe('Account Mongo Repository', () => {
   describe('updateAccessToken()', () => {
     test('Should update the account accessToken on updateAccessToken success', async () => {
       const sut = new AccountMongoRepository()
-      const mockAccountInput = {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password'
-      }
+      const mockAccountInput = mockAddAccountParams()
+
       const { insertedId } = await accountCollection.insertOne(mockAccountInput)
       const id = insertedId
       const account = await accountCollection.findOne({ _id: id })
@@ -87,9 +78,7 @@ describe('Account Mongo Repository', () => {
       const sut = new AccountMongoRepository()
       const accessToken = 'any_token'
       const mockAccountInput = {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
+        ...mockAddAccountParams(),
         accessToken
       }
       await accountCollection.insertOne(mockAccountInput)
@@ -106,9 +95,7 @@ describe('Account Mongo Repository', () => {
       const sut = new AccountMongoRepository()
       const accessToken = 'any_token'
       const mockAccountInput = {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
+        ...mockAddAccountParams(),
         accessToken,
         role: 'admin'
       }
@@ -126,9 +113,7 @@ describe('Account Mongo Repository', () => {
       const sut = new AccountMongoRepository()
       const accessToken = 'any_token'
       const mockAccountInput = {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
+        ...mockAddAccountParams(),
         accessToken
       }
       await accountCollection.insertOne(mockAccountInput)
@@ -141,9 +126,7 @@ describe('Account Mongo Repository', () => {
       const sut = new AccountMongoRepository()
       const accessToken = 'any_token'
       const mockAccountInput = {
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
+        ...mockAddAccountParams(),
         accessToken,
         role: 'admin'
       }
