@@ -23,8 +23,6 @@ async function getRouterFromRouteFile (routerFilePath: string): Promise<Function
 
 function addAllRoutesFromFileToRouter (router: Router, filesRoutesPath: string[]): void {
   filesRoutesPath.map(async file => {
-    console.log(`Adding route from file: ${file}`)
-
     const route = await getRouterFromRouteFile(file)
     route(router)
   })
