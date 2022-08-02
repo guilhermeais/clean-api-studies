@@ -4,7 +4,7 @@ module.exports = {
     '<rootDir>/src'
   ],
   collectCoverage: true,
-  collectCoverageFrom: ['<rootDir>/src/**/*.ts', '!<rootDir>/src/main/**'],
+  collectCoverageFrom: ['<rootDir>/src/**/*.ts', '!<rootDir>/src/main/**', '!**/test/**', '!**/protocols/**', '!**/models/**', '!**/usecases/**'],
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   transform: {
