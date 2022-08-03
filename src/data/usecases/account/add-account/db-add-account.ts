@@ -25,7 +25,7 @@ export class DbAddAccount implements AddAccount {
         Object.assign({}, accountData, { password: hashedPassword })
       )
 
-      return await new Promise(resolve => resolve(account))
+      return account
     }
 
     return null

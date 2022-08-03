@@ -36,7 +36,7 @@ describe('DbAddAccount Usecase', () => {
   test('Should throw if Hasher throws', async () => {
     const { sut, hasherStub } = makeSut()
     jest.spyOn(hasherStub, 'hash')
-      .mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error('some_error'))))
+      .mockRejectedValueOnce(new Error('some_error'))
 
     const sutPromise = sut.add(mockAccount())
     await expect(sutPromise).rejects.toThrow(new Error('some_error'))
@@ -53,7 +53,7 @@ describe('DbAddAccount Usecase', () => {
   test('Should throw if AddAccountRepository throws', async () => {
     const { sut, addAccountRepositoryStub } = makeSut()
     jest.spyOn(addAccountRepositoryStub, 'add')
-      .mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error('some_error'))))
+      .mockRejectedValueOnce(new Error('some_error'))
 
     const sutPromise = sut.add(mockAccount())
     await expect(sutPromise).rejects.toThrow(new Error('some_error'))
