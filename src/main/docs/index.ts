@@ -14,7 +14,8 @@ import {
   surveysSchema,
   surveyAnswerSchema,
   apiKeyAuthSchema,
-  signupParamsSchema
+  signupParamsSchema,
+  addSurveyParamsSchema
 } from './schemas'
 
 export const swaggerConfig = {
@@ -51,6 +52,7 @@ export const swaggerConfig = {
     account: accountSchema,
     signupParams: signupParamsSchema,
     loginParams: loginParamsSchema,
+    addSurveyParams: addSurveyParamsSchema,
     error: errorSchema,
     surveys: surveysSchema,
     survey: surveySchema,
