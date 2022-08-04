@@ -5,7 +5,7 @@ import {
   notFound,
   forbiddenError
 } from './components'
-import { loginPath, surveyPath } from './paths'
+import { loginPath, signupPath, surveyPath } from './paths'
 import {
   accountSchema,
   errorSchema,
@@ -13,7 +13,8 @@ import {
   surveySchema,
   surveysSchema,
   surveyAnswerSchema,
-  apiKeyAuthSchema
+  apiKeyAuthSchema,
+  signupParamsSchema
 } from './schemas'
 
 export const swaggerConfig = {
@@ -43,10 +44,12 @@ export const swaggerConfig = {
   ],
   paths: {
     '/login': loginPath,
-    '/surveys': surveyPath
+    '/surveys': surveyPath,
+    '/signup': signupPath
   },
   schemas: {
     account: accountSchema,
+    signupParams: signupParamsSchema,
     loginParams: loginParamsSchema,
     error: errorSchema,
     surveys: surveysSchema,
