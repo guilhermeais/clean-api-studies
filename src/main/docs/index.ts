@@ -1,6 +1,20 @@
-import { serverError, unauthorizedError, badRequest, notFound } from './components'
-import { loginPath } from './paths'
-import { accountSchema, errorSchema, loginParamsSchema } from './schemas'
+import {
+  serverError,
+  unauthorizedError,
+  badRequest,
+  notFound,
+  forbiddenError
+} from './components'
+import { loginPath, surveyPath } from './paths'
+import {
+  accountSchema,
+  errorSchema,
+  loginParamsSchema,
+  surveySchema,
+  surveysSchema,
+  surveyAnswerSchema,
+  apiKeyAuthSchema
+} from './schemas'
 
 export const swaggerConfig = {
   openapi: '3.0.0',
@@ -22,20 +36,31 @@ export const swaggerConfig = {
   tags: [
     {
       name: 'Login'
+    },
+    {
+      name: 'Enquete'
     }
   ],
   paths: {
-    '/login': loginPath
+    '/login': loginPath,
+    '/surveys': surveyPath
   },
   schemas: {
     account: accountSchema,
     loginParams: loginParamsSchema,
-    error: errorSchema
+    error: errorSchema,
+    surveys: surveysSchema,
+    survey: surveySchema,
+    surveyAnswer: surveyAnswerSchema
   },
   components: {
+    securitySchemes: {
+      apiKeyAuth: apiKeyAuthSchema
+    },
     badRequest,
     serverError,
     unauthorizedError,
-    notFound
+    notFound,
+    forbiddenError
   }
 }
