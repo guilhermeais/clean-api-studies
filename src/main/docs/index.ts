@@ -1,25 +1,6 @@
-import {
-  serverError,
-  unauthorizedError,
-  badRequest,
-  notFound,
-  forbiddenError
-} from './components'
-import { loginPath, signupPath, surveyPath } from './paths'
-import { surveyResultPath } from './paths/survey-result-path'
-import {
-  accountSchema,
-  errorSchema,
-  loginParamsSchema,
-  surveySchema,
-  surveysSchema,
-  surveyAnswerSchema,
-  apiKeyAuthSchema,
-  signupParamsSchema,
-  addSurveyParamsSchema,
-  saveSurveyParamsSchema,
-  surveyResultSchema
-} from './schemas'
+import { components } from './components'
+import { paths } from './paths'
+import { schemas } from './schemas'
 
 export const swaggerConfig = {
   openapi: '3.0.0',
@@ -46,33 +27,7 @@ export const swaggerConfig = {
       name: 'Enquete'
     }
   ],
-  paths: {
-    '/login': loginPath,
-    '/surveys': surveyPath,
-    '/signup': signupPath,
-    '/surveys/{surveyId}/results': surveyResultPath
-
-  },
-  schemas: {
-    account: accountSchema,
-    signupParams: signupParamsSchema,
-    loginParams: loginParamsSchema,
-    addSurveyParams: addSurveyParamsSchema,
-    error: errorSchema,
-    surveys: surveysSchema,
-    survey: surveySchema,
-    surveyAnswer: surveyAnswerSchema,
-    saveSurveyParams: saveSurveyParamsSchema,
-    surveyResult: surveyResultSchema
-  },
-  components: {
-    securitySchemes: {
-      apiKeyAuth: apiKeyAuthSchema
-    },
-    badRequest,
-    serverError,
-    unauthorizedError,
-    notFound,
-    forbiddenError
-  }
+  paths,
+  schemas,
+  components
 }
