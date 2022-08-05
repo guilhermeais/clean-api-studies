@@ -6,6 +6,7 @@ import {
   forbiddenError
 } from './components'
 import { loginPath, signupPath, surveyPath } from './paths'
+import { surveyResultPath } from './paths/survey-result-path'
 import {
   accountSchema,
   errorSchema,
@@ -15,7 +16,9 @@ import {
   surveyAnswerSchema,
   apiKeyAuthSchema,
   signupParamsSchema,
-  addSurveyParamsSchema
+  addSurveyParamsSchema,
+  saveSurveyParamsSchema,
+  surveyResultSchema
 } from './schemas'
 
 export const swaggerConfig = {
@@ -46,7 +49,9 @@ export const swaggerConfig = {
   paths: {
     '/login': loginPath,
     '/surveys': surveyPath,
-    '/signup': signupPath
+    '/signup': signupPath,
+    '/surveys/{surveyId}/results': surveyResultPath
+
   },
   schemas: {
     account: accountSchema,
@@ -56,7 +61,9 @@ export const swaggerConfig = {
     error: errorSchema,
     surveys: surveysSchema,
     survey: surveySchema,
-    surveyAnswer: surveyAnswerSchema
+    surveyAnswer: surveyAnswerSchema,
+    saveSurveyParams: saveSurveyParamsSchema,
+    surveyResult: surveyResultSchema
   },
   components: {
     securitySchemes: {
