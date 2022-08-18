@@ -3,14 +3,15 @@ import {
   HttpRequest,
   LoadSurveyById
 } from './load-survey-result-controller-protocols'
-import { mockLoadSurveyById } from '@/presentation/test'
+import { mockLoadSurveyById, mockLoadSurveyResult } from '@/presentation/test'
 import { forbidden, serverError } from '@/presentation/helpers/http/http-helper'
 import { InvalidParamError } from '@/presentation/errors'
+import { LoadSurveyResult } from '@/domain/usecases/survey-result/load-survey-result'
 
 function mockRequest (): HttpRequest {
   return {
     params: {
-      surveyId: 'any_survey_id'
+      surveyId: 'any_id'
     }
   }
 }
@@ -18,15 +19,18 @@ function mockRequest (): HttpRequest {
 type SutTypes = {
   sut: LoadSurveyResultController
   loadSurveyByIdStub: LoadSurveyById
+  loadSurveyResultStub: LoadSurveyResult
 }
 
 function makeSut (): SutTypes {
   const loadSurveyByIdStub = mockLoadSurveyById()
-  const sut = new LoadSurveyResultController(loadSurveyByIdStub)
+  const loadSurveyResultStub = mockLoadSurveyResult()
+  const sut = new LoadSurveyResultController(loadSurveyByIdStub, loadSurveyResultStub)
 
   return {
     sut,
-    loadSurveyByIdStub
+    loadSurveyByIdStub,
+    loadSurveyResultStub
   }
 }
 
@@ -36,7 +40,7 @@ describe('LoadSurveyResult Controller', () => {
     jest.spyOn(loadSurveyByIdStub, 'loadById')
     await sut.handle(mockRequest())
 
-    expect(loadSurveyByIdStub.loadById).toHaveBeenCalledWith('any_survey_id')
+    expect(loadSurveyByIdStub.loadById).toHaveBeenCalledWith('any_id')
   })
 
   test('Should return 403 if LoadSurveyById returns null', async () => {
@@ -54,5 +58,13 @@ describe('LoadSurveyResult Controller', () => {
     const httpResponse = await sut.handle(mockRequest())
 
     expect(httpResponse).toEqual(serverError(mockedError))
+  })
+
+  test('Should call LoadSurveyResult with correct surveyId', async () => {
+    const { sut, loadSurveyResultStub } = makeSut()
+    jest.spyOn(loadSurveyResultStub, 'load')
+    await sut.handle(mockRequest())
+
+    expect(loadSurveyResultStub.load).toHaveBeenCalledWith('any_id')
   })
 })
