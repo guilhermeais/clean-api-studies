@@ -1,24 +1,34 @@
 import { DbLoadSurveyResult } from './db-load-survey-result'
 import { mockLoadSurveyResultRepository, mockSurveyResult } from '@/domain/test'
-import { LoadSurveyResultRepository } from './db-load-survey-result-protocols'
-
+import { LoadSurveyResultRepository, LoadSurveyByIdRepository } from './db-load-survey-result-protocols'
+import { mockLoadSurveyByIdRepository } from '@/data/test'
+import MockDate from 'mockdate'
 type SutTypes = {
   sut: DbLoadSurveyResult
   loadSurveyResultRepositoryStub: LoadSurveyResultRepository
+  loadSurveyByIdRepositoryStub: LoadSurveyByIdRepository
 }
 
 function makeSut (): SutTypes {
   const loadSurveyResultRepositoryStub = mockLoadSurveyResultRepository()
-  jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
-  const sut = new DbLoadSurveyResult(loadSurveyResultRepositoryStub)
+  const loadSurveyByIdRepositoryStub = mockLoadSurveyByIdRepository()
+  const sut = new DbLoadSurveyResult(loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub)
 
   return {
     sut,
-    loadSurveyResultRepositoryStub
+    loadSurveyResultRepositoryStub,
+    loadSurveyByIdRepositoryStub
   }
 }
 
 describe('DbLoadSurveyResult UseCase', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
   test('Should call LoadSurveyResultRepository', async () => {
     const { sut, loadSurveyResultRepositoryStub } = makeSut()
     jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId')
@@ -41,5 +51,14 @@ describe('DbLoadSurveyResult UseCase', () => {
     const surveyResult = await sut.load('any_survey_id')
 
     expect(surveyResult).toEqual(mockSurveyResult())
+  })
+
+  test('Should call LoadSurveyByIdRepository if LoadSurveyResultRepository returns null', async () => {
+    const { sut, loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub } = makeSut()
+    jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId').mockResolvedValueOnce(null)
+    jest.spyOn(loadSurveyByIdRepositoryStub, 'loadById')
+    await sut.load('any_survey_id')
+
+    expect(loadSurveyByIdRepositoryStub.loadById).toHaveBeenCalledWith('any_survey_id')
   })
 })
