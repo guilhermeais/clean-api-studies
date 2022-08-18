@@ -9,7 +9,7 @@ import {
 } from './survey-result-mongo-repository-protocols'
 
 export class SurveyResultMongoRepository implements SaveSurveyResultRepository, LoadSurveyResultRepository {
-  async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
+  async save (data: SaveSurveyResultParams): Promise<void> {
     const surveyId = new ObjectId(data.surveyId)
     const accountId = new ObjectId(data.accountId)
 
@@ -26,8 +26,6 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         upsert: true
       }
     )
-    const surveyResult = await this.loadBySurveyId(data.surveyId)
-    return surveyResult
   }
 
   async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
