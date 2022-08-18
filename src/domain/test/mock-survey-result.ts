@@ -1,6 +1,7 @@
 import { LoadSurveyResultRepository } from '@/data/protocols/db/survey-result/load-survey-result-repository'
 import { SurveyResultModel } from '../models/survey-result'
 import { SaveSurveyResultParams } from '../usecases/survey-result/save-survey-result'
+import { mockSurvey } from './mock-survey'
 
 export function mockSurveyResult (): SurveyResultModel {
   return {
@@ -20,6 +21,21 @@ export function mockSurveyResult (): SurveyResultModel {
       }
     ],
     date: new Date()
+  }
+}
+
+export function mockSurveyResultEmpty (): SurveyResultModel {
+  const survey = mockSurvey()
+  return {
+    ...survey,
+    surveyId: survey.id,
+    question: survey.question,
+    date: survey.date,
+    answers: survey.answers.map(answer => ({
+      ...answer,
+      count: 0,
+      percent: 0
+    }))
   }
 }
 
