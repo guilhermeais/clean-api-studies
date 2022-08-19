@@ -62,7 +62,9 @@ describe('Survey Routes', () => {
 
     test('Should return 200 on save survey result with access token', async () => {
       const accessToken = await makeAccessToken()
-      const { insertedIds: { 0: surveyId } } = await surveyCollection.insertMany([
+      const {
+        insertedIds: { 0: surveyId }
+      } = await surveyCollection.insertMany([
         {
           question: 'Question',
           answers: [
@@ -89,9 +91,54 @@ describe('Survey Routes', () => {
 
   describe('GET /surveys/:surveyId/results', () => {
     test('Should return 403 on load survey result without access token', async () => {
+      await request(app).get('/api/surveys/any_survey_id/results').expect(403)
+    })
+
+    test('Should return 200 on load survey result with access token', async () => {
+      const accessToken = await makeAccessToken()
+      const {
+        insertedIds: { 0: surveyId }
+      } = await surveyCollection.insertMany([
+        {
+          question: 'Question',
+          answers: [
+            {
+              answer: 'Answer 1',
+              image: 'http://image-name.com'
+            },
+            {
+              answer: 'Answer 2'
+            }
+          ],
+          date: new Date()
+        }
+      ])
+
       await request(app)
-        .get('/api/surveys/any_survey_id/results')
-        .expect(403)
+        .get(`/api/surveys/${surveyId.toString()}/results`)
+        .set('x-access-token', accessToken)
+        .expect(200)
+        .expect(res => {
+          expect(res.body).toEqual({
+            question: 'Question',
+            answers: [
+              {
+                answer: 'Answer 1',
+                image: 'http://image-name.com',
+                count: 0,
+                percent: 0
+              },
+              {
+                answer: 'Answer 2',
+                count: 0,
+                percent: 0
+              }
+            ],
+            surveyId: surveyId.toString(),
+            id: surveyId.toString(),
+            date: expect.any(String)
+          })
+        })
     })
   })
 })
