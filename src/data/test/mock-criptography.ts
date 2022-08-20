@@ -2,43 +2,46 @@ import { Decrypter } from '../protocols/criptography/decrypter'
 import { Encrypter } from '../protocols/criptography/encrypter'
 import { HashComparer } from '../protocols/criptography/hash-comparer'
 import { Hasher } from '../protocols/criptography/hasher'
+import { faker } from '@faker-js/faker'
 
-export function mockHasher (): Hasher {
-  class HasherStub implements Hasher {
-    async hash (value: string): Promise<string> {
-      return await Promise.resolve('hashed_password')
-    }
+export class HasherSpy implements Hasher {
+  digest = faker.datatype.uuid()
+  plaintext: string
+  async hash (plaintext: string): Promise<string> {
+    this.plaintext = plaintext
+    return await Promise.resolve(this.digest)
   }
-  const hasherStub = new HasherStub()
-  return hasherStub
 }
 
-export function mockDecrypter (): Decrypter {
-  class DecrypterStub implements Decrypter {
-    async decrypt (value: string): Promise<string> {
-      return await Promise.resolve('any_token')
-    }
-  }
+export class DecrypterSpy implements Decrypter {
+  plaintext= faker.internet.password()
+  cyphertext: string
 
-  return new DecrypterStub()
+  async decrypt (ciphertext: string): Promise<string> {
+    this.cyphertext = ciphertext
+    return await Promise.resolve(this.plaintext)
+  }
 }
 
-export function mockEncrypter (): Encrypter {
-  class EncrypterStub implements Encrypter {
-    async encrypt (id: string): Promise<string> {
-      return await Promise.resolve('any_token')
-    }
+export class EncrypterSpy implements Encrypter {
+  ciphertext = faker.datatype.uuid()
+  plaintext: string
+
+  async encrypt (plaintext: string): Promise<string> {
+    this.plaintext = plaintext
+
+    return await Promise.resolve(this.ciphertext)
   }
-  const encrypterStub = new EncrypterStub()
-  return encrypterStub
 }
 
-export function mockHashComparer (): HashComparer {
-  class HashComparerStub implements HashComparer {
-    async compare (value: string, hash: string): Promise<boolean> {
-      return await Promise.resolve(true)
-    }
+export class HashComparerSpy implements HashComparer {
+  plaintext: string
+  digest: string
+  isValid = true
+
+  async compare (plaintext: string, digest: string): Promise<boolean> {
+    this.plaintext = plaintext
+    this.digest = digest
+    return await Promise.resolve(this.isValid)
   }
-  const hashComparerStub = new HashComparerStub()
-  return hashComparerStub
 }

@@ -1,39 +1,37 @@
-import { Decrypter } from '@/data/protocols/criptography/decrypter'
 import { LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
 import { DbLoadAccountByToken } from './db-load-account-by-token'
 import { mockAccount } from '@/domain/test'
-import { mockDecrypter, mockLoadAccountByTokenRepository } from '@/data/test'
+import { DecrypterSpy, mockLoadAccountByTokenRepository } from '@/data/test'
 
 type SutTypes = {
   sut: DbLoadAccountByToken
-  decrypterStub: Decrypter
+  decrypterSpy: DecrypterSpy
   loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository
 }
 
 function makeSut (): SutTypes {
-  const decrypterStub = mockDecrypter()
+  const decrypterSpy = new DecrypterSpy()
   const loadAccountByTokenRepositoryStub = mockLoadAccountByTokenRepository()
-  const sut = new DbLoadAccountByToken(decrypterStub, loadAccountByTokenRepositoryStub)
+  const sut = new DbLoadAccountByToken(decrypterSpy, loadAccountByTokenRepositoryStub)
 
   return {
     sut,
-    decrypterStub,
+    decrypterSpy,
     loadAccountByTokenRepositoryStub
   }
 }
 
 describe('DbLoadAccountByToken Usecase', () => {
   test('Should call Decrypter with correct values', async () => {
-    const { sut, decrypterStub } = makeSut()
-    jest.spyOn(decrypterStub, 'decrypt')
+    const { sut, decrypterSpy } = makeSut()
     await sut.load('any_token', 'any_role')
 
-    expect(decrypterStub.decrypt).toHaveBeenCalledWith('any_token')
+    expect(decrypterSpy.cyphertext).toBe('any_token')
   })
 
   test('Should return null if Decrypter returns null', async () => {
-    const { sut, decrypterStub } = makeSut()
-    jest.spyOn(decrypterStub, 'decrypt').mockResolvedValueOnce(null)
+    const { sut, decrypterSpy } = makeSut()
+    jest.spyOn(decrypterSpy, 'decrypt').mockResolvedValueOnce(null)
     const account = await sut.load('any_token')
     expect(account).toBeNull()
   })
@@ -60,9 +58,9 @@ describe('DbLoadAccountByToken Usecase', () => {
   })
 
   test('Should throw if Decrypter throws', async () => {
-    const { sut, decrypterStub } = makeSut()
+    const { sut, decrypterSpy } = makeSut()
     const errorMock = new Error('some_error')
-    jest.spyOn(decrypterStub, 'decrypt').mockRejectedValueOnce(errorMock)
+    jest.spyOn(decrypterSpy, 'decrypt').mockRejectedValueOnce(errorMock)
 
     const sutPromise = sut.load('any_token', 'any_role')
     await expect(sutPromise).rejects.toThrow(errorMock)
