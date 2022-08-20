@@ -4,39 +4,43 @@ import { LoadAccountByTokenRepository } from '../protocols/db/account/load-accou
 import { UpdateAccessTokenRepository } from '../protocols/db/account/update-access-token-repository'
 import { AccountModel, AddAccountParams, LoadAccountByEmailRepository } from '../usecases/account/add-account/db-add-account-protocols'
 
-export function mockAddAccountRepository (): AddAccountRepository {
-  class AddAccountRepositoryStub implements AddAccountRepository {
-    async add (accountData: AddAccountParams): Promise<AccountModel> {
-      return await Promise.resolve(mockAccount())
-    }
+export class AddAccountRepositorySpy implements AddAccountRepository {
+  account = mockAccount()
+  addAccountParams: AddAccountParams
+  async add (accountData: AddAccountParams): Promise<AccountModel> {
+    this.addAccountParams = accountData
+    return await Promise.resolve(this.account)
   }
-  return new AddAccountRepositoryStub()
 }
 
-export function mockLoadAccountEmailByRepository (): LoadAccountByEmailRepository {
-  class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    async loadByEmail (email: string): Promise<AccountModel> {
-      return await Promise.resolve(mockAccount())
-    }
+export class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailRepository {
+  account = mockAccount()
+  email: string
+  async loadByEmail (email: string): Promise<AccountModel> {
+    this.email = email
+    return await Promise.resolve(this.account)
   }
-  return new LoadAccountByEmailRepositoryStub()
 }
 
-export function mockLoadAccountByTokenRepository (): LoadAccountByTokenRepository {
-  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
-    async loadByToken (token: string, role?: string): Promise<AccountModel> {
-      return await Promise.resolve(mockAccount())
-    }
-  }
+export class LoadAccountByTokenRepositorySpy implements LoadAccountByTokenRepository {
+  account = mockAccount()
+  token: string
+  role: string
 
-  return new LoadAccountByTokenRepositoryStub()
+  async loadByToken (token: string, role?: string): Promise<AccountModel> {
+    this.token = token
+    this.role = role
+
+    return await Promise.resolve(this.account)
+  }
 }
 
-export function mockUpdateAccessTokenRepository (): UpdateAccessTokenRepository {
-  class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-    async updateAccessToken (id: string, token: string): Promise<void> {
-      return await Promise.resolve()
-    }
+export class UpdateAccessTokenRepositorySpy implements UpdateAccessTokenRepository {
+  id: string
+  token: string
+  async updateAccessToken (id: string, token: string): Promise<void> {
+    this.id = id
+    this.token = token
+    return await Promise.resolve()
   }
-  return new UpdateAccessTokenRepositoryStub()
 }
