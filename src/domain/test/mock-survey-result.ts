@@ -1,4 +1,3 @@
-import { LoadSurveyResultRepository } from '@/data/protocols/db/survey-result/load-survey-result-repository'
 import { SurveyResultModel } from '../models/survey-result'
 import { SaveSurveyResultParams } from '../usecases/survey-result/save-survey-result'
 import { mockSurvey } from './mock-survey'
@@ -46,14 +45,4 @@ export function mockSaveSurveyResultParams (): SaveSurveyResultParams {
     answer: 'any_answer',
     date: new Date()
   }
-}
-
-export function mockLoadSurveyResultRepository (): LoadSurveyResultRepository {
-  class LoadSurveyResultRepositoryStub implements LoadSurveyResultRepository {
-    async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
-      return await Promise.resolve(mockSurveyResult())
-    }
-  }
-
-  return new LoadSurveyResultRepositoryStub()
 }

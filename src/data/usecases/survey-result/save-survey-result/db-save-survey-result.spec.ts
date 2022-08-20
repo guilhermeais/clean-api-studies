@@ -6,8 +6,8 @@ import {
 } from './db-save-survey-result-protocols'
 
 import MockDate from 'mockdate'
-import { mockSaveSurveyResultRepository } from '@/data/test'
-import { mockSurveyResult, mockSaveSurveyResultParams, mockLoadSurveyResultRepository } from '@/domain/test/mock-survey-result'
+import { mockLoadSurveyResultRepository, mockSaveSurveyResultRepository } from '@/data/test'
+import { mockSurveyResult, mockSaveSurveyResultParams } from '@/domain/test/mock-survey-result'
 
 type SutTypes = {
   sut: DbSaveSurveyResult
