@@ -1,0 +1,17 @@
+{
+    "workbench.colorTheme": "Dracula Soft",
+    "workbench.iconTheme": "material-icon-theme",
+    "git.autofetch": true,
+    "prettier.enable": true,
+    "editor.inlineSuggest.enabled": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[nginx]": {
+        "editor.defaultFormatter": "raynigon.nginx-formatter"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "typescript.format.insertSpaceBeforeFunctionParenthesis": true
+}
