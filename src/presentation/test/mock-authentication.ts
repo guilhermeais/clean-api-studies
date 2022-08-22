@@ -1,11 +1,12 @@
+import { faker } from '@faker-js/faker'
 import { Authentication, AuthenticationParams } from '../controllers/login/login/login-controller-protocols'
 
-export function mockAuthentication (): Authentication {
-  class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationParams): Promise<string> {
-      return await Promise.resolve('any_token')
-    }
-  }
+export class AuthenticationSpy implements Authentication {
+  authenticationParams: AuthenticationParams
+  ciphertext = faker.datatype.uuid()
 
-  return new AuthenticationStub()
+  async auth (authentication: AuthenticationParams): Promise<string> {
+    this.authenticationParams = authentication
+    return await Promise.resolve(this.ciphertext)
+  }
 }
