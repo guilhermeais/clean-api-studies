@@ -1,8 +1,8 @@
-import { HttpRequest, Validation, AddSurvey } from './add-survey-controller-protocols'
+import { HttpRequest, Validation } from './add-survey-controller-protocols'
 import { AddSurveyController } from './add-survey-controller'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
-import { mockAddSurvey, mockValidation } from '@/presentation/test'
+import { AddSurveySpy, mockValidation } from '@/presentation/test'
 function mockRequest (): HttpRequest {
   return {
     body: {
@@ -21,18 +21,18 @@ function mockRequest (): HttpRequest {
 type SutTypes = {
   sut: AddSurveyController
   validationStub: Validation
-  addSurveyStub: AddSurvey
+  addSurveySpy: AddSurveySpy
 }
 
 function makeSut (): SutTypes {
   const validationStub = mockValidation()
-  const addSurveyStub = mockAddSurvey()
-  const sut = new AddSurveyController(validationStub, addSurveyStub)
+  const addSurveySpy = new AddSurveySpy()
+  const sut = new AddSurveyController(validationStub, addSurveySpy)
 
   return {
     sut,
     validationStub,
-    addSurveyStub
+    addSurveySpy
   }
 }
 describe('AddSurvey Controller', () => {
@@ -62,18 +62,17 @@ describe('AddSurvey Controller', () => {
   })
 
   test('Should call AddSurvey with correct values', async () => {
-    const { sut, addSurveyStub } = makeSut()
-    jest.spyOn(addSurveyStub, 'add')
+    const { sut, addSurveySpy } = makeSut()
     const httpRequest = mockRequest()
     await sut.handle(httpRequest)
 
-    expect(addSurveyStub.add).toHaveBeenCalledWith(httpRequest.body)
+    expect(addSurveySpy.addSurveyParams).toEqual(httpRequest.body)
   })
 
   test('Should return serverError if AddSurvey throws', async () => {
-    const { sut, addSurveyStub } = makeSut()
+    const { sut, addSurveySpy } = makeSut()
     const errorMock = new Error('some_error')
-    jest.spyOn(addSurveyStub, 'add').mockRejectedValueOnce(errorMock)
+    jest.spyOn(addSurveySpy, 'add').mockRejectedValueOnce(errorMock)
     const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(serverError(errorMock))
   })
