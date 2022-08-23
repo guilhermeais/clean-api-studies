@@ -1,17 +1,16 @@
 import { mockAccount } from '@/domain/test'
 import { EmailInUseError, MissingParamError, ServerError } from '@/presentation/errors'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
-import { AuthenticationSpy, mockValidation, AddAccountSpy } from '@/presentation/test'
+import { AuthenticationSpy, ValidationSpy, AddAccountSpy } from '@/presentation/test'
 import { SignUpController } from './signup-controller'
 import {
-  HttpRequest,
-  Validation
+  HttpRequest
 } from './signup-controller-protocols'
 
 type SutTypes = {
   sut: SignUpController
   addAccountSpy: AddAccountSpy
-  validationStub: Validation
+  validationSpy: ValidationSpy
   authenticationSpy: AuthenticationSpy
 }
 
@@ -27,17 +26,17 @@ function mockRequest (): HttpRequest {
 
 function makeSut (): SutTypes {
   const addAccountSpy = new AddAccountSpy()
-  const validationStub = mockValidation()
+  const validationSpy = new ValidationSpy()
   const authenticationSpy = new AuthenticationSpy()
   const sut = new SignUpController(
     addAccountSpy,
-    validationStub,
+    validationSpy,
     authenticationSpy
   )
   return {
     sut,
     addAccountSpy,
-    validationStub,
+    validationSpy,
     authenticationSpy
   }
 }
@@ -93,17 +92,16 @@ describe('SignUp Controller', () => {
   })
 
   test('Should call Validation with correct value', async () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate')
+    const { sut, validationSpy } = makeSut()
     const httpRequest = mockRequest()
     await sut.handle(httpRequest)
-    expect(validationStub.validate).toHaveBeenCalledWith(httpRequest.body)
+    expect(validationSpy.input).toEqual(httpRequest.body)
   })
 
   test('Should return 400 if Validation returns an error', async () => {
-    const { sut, validationStub } = makeSut()
+    const { sut, validationSpy } = makeSut()
     const errorMock = new MissingParamError('any_field')
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMock)
+    validationSpy.error = errorMock
     const httpRequest = mockRequest()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(errorMock))

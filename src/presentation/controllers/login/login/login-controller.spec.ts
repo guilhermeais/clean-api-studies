@@ -1,8 +1,8 @@
 import LoginController from './login-controller'
 import { MissingParamError } from '@/presentation/errors'
 import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers/http/http-helper'
-import { HttpRequest, Validation } from './login-controller-protocols'
-import { AuthenticationSpy, mockValidation } from '@/presentation/test'
+import { HttpRequest } from './login-controller-protocols'
+import { AuthenticationSpy, ValidationSpy } from '@/presentation/test'
 
 function mockRequest (): HttpRequest {
   return {
@@ -17,17 +17,17 @@ function mockRequest (): HttpRequest {
 type SutTypes = {
   sut: LoginController
   authenticationSpy: AuthenticationSpy
-  validationStub: Validation
+  validationSpy: ValidationSpy
 }
 
 function makeSut (): SutTypes {
   const authenticationSpy = new AuthenticationSpy()
-  const validationStub = mockValidation()
-  const sut = new LoginController(validationStub, authenticationSpy)
+  const validationSpy = new ValidationSpy()
+  const sut = new LoginController(validationSpy, authenticationSpy)
   return {
     sut,
     authenticationSpy,
-    validationStub
+    validationSpy
   }
 }
 describe('Login Controller', () => {
@@ -66,17 +66,16 @@ describe('Login Controller', () => {
   })
 
   test('Should call Validation with correct value', async () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate')
+    const { sut, validationSpy } = makeSut()
     const httpRequest = mockRequest()
     await sut.handle(httpRequest)
-    expect(validationStub.validate).toHaveBeenCalledWith(httpRequest.body)
+    expect(validationSpy.input).toEqual(httpRequest.body)
   })
 
   test('Should return 400 if Validation returns an error', async () => {
-    const { sut, validationStub } = makeSut()
+    const { sut, validationSpy } = makeSut()
     const errorMock = new MissingParamError('any_field')
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMock)
+    validationSpy.error = errorMock
     const httpRequest = mockRequest()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(errorMock))

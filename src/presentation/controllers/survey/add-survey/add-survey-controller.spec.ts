@@ -1,8 +1,8 @@
-import { HttpRequest, Validation } from './add-survey-controller-protocols'
+import { HttpRequest } from './add-survey-controller-protocols'
 import { AddSurveyController } from './add-survey-controller'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
-import { AddSurveySpy, mockValidation } from '@/presentation/test'
+import { AddSurveySpy, ValidationSpy } from '@/presentation/test'
 function mockRequest (): HttpRequest {
   return {
     body: {
@@ -20,18 +20,18 @@ function mockRequest (): HttpRequest {
 
 type SutTypes = {
   sut: AddSurveyController
-  validationStub: Validation
+  validationSpy: ValidationSpy
   addSurveySpy: AddSurveySpy
 }
 
 function makeSut (): SutTypes {
-  const validationStub = mockValidation()
+  const validationSpy = new ValidationSpy()
   const addSurveySpy = new AddSurveySpy()
-  const sut = new AddSurveyController(validationStub, addSurveySpy)
+  const sut = new AddSurveyController(validationSpy, addSurveySpy)
 
   return {
     sut,
-    validationStub,
+    validationSpy,
     addSurveySpy
   }
 }
@@ -45,18 +45,17 @@ describe('AddSurvey Controller', () => {
   })
 
   test('Should call Validation with correct values', async () => {
-    const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate')
+    const { sut, validationSpy } = makeSut()
     const httpRequest = mockRequest()
     await sut.handle(httpRequest)
 
-    expect(validationStub.validate).toHaveBeenCalledWith(httpRequest.body)
+    expect(validationSpy.input).toEqual(httpRequest.body)
   })
 
   test('Should return badRequest if Validation fails', async () => {
-    const { sut, validationStub } = makeSut()
+    const { sut, validationSpy } = makeSut()
     const errorMock = new Error('some_error')
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMock)
+    validationSpy.error = errorMock
     const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(badRequest(errorMock))
   })
