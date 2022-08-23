@@ -1,25 +1,26 @@
+import { faker } from '@faker-js/faker'
 import { SurveyResultModel } from '../models/survey-result'
 import { SaveSurveyResultParams } from '../usecases/survey-result/save-survey-result'
 import { mockSurvey } from './mock-survey'
 
 export function mockSurveyResult (): SurveyResultModel {
   return {
-    surveyId: 'any_survey_id',
-    question: 'any_question',
+    surveyId: faker.datatype.uuid(),
+    question: faker.lorem.sentence(),
     answers: [
       {
-        image: 'any_image',
-        answer: 'any_answer',
-        count: 1,
-        percent: 50
+        image: faker.image.imageUrl(),
+        answer: faker.lorem.sentence(),
+        count: faker.datatype.number(),
+        percent: faker.datatype.number({ precision: 0.01 })
       },
       {
-        answer: 'other_answer',
-        count: 1,
-        percent: 50
+        answer: faker.lorem.sentence(),
+        count: faker.datatype.number(),
+        percent: faker.datatype.number({ precision: 0.01 })
       }
     ],
-    date: new Date()
+    date: faker.date.recent()
   }
 }
 
@@ -40,9 +41,9 @@ export function mockSurveyResultEmpty (): SurveyResultModel {
 
 export function mockSaveSurveyResultParams (): SaveSurveyResultParams {
   return {
-    accountId: 'any_account_id',
-    surveyId: 'any_survey_id',
-    answer: 'any_answer',
+    accountId: faker.datatype.uuid(),
+    surveyId: faker.datatype.uuid(),
+    answer: faker.lorem.sentence(),
     date: new Date()
   }
 }
