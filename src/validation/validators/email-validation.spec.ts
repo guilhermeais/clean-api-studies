@@ -1,13 +1,12 @@
 import { mockAccount } from '@/domain/test'
 import { InvalidParamError } from '@/presentation/errors'
 import { HttpRequest } from '@/presentation/protocols'
-import { EmailValidator } from '../protocols/email-validator'
-import { mockEmailValidator } from '../test'
+import { EmailValidatorSpy } from '@/validation/test'
 import { EmailValidation } from './email-validation'
 
 type SutTypes = {
   sut: EmailValidation
-  emailValidatorStub: EmailValidator
+  emailValidatorSpy: EmailValidatorSpy
 }
 
 function mockRequest (): HttpRequest {
@@ -21,27 +20,26 @@ function mockRequest (): HttpRequest {
 }
 
 function makeSut (): SutTypes {
-  const emailValidatorStub = mockEmailValidator()
-  const sut = new EmailValidation('email', emailValidatorStub)
+  const emailValidatorSpy = new EmailValidatorSpy()
+  const sut = new EmailValidation('email', emailValidatorSpy)
   return {
     sut,
-    emailValidatorStub
+    emailValidatorSpy
   }
 }
 
 describe('Email Validation', () => {
   test('Should call EmailValidator with correct email', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid')
+    const { sut, emailValidatorSpy } = makeSut()
     const httpRequest = mockRequest()
     sut.validate(httpRequest.body)
-    expect(emailValidatorStub.isValid).toHaveBeenCalledWith(httpRequest.body.email)
+    expect(emailValidatorSpy.email).toBe(httpRequest.body.email)
   })
 
   test('Should throw if EmailValidator throws', async () => {
-    const { sut, emailValidatorStub } = makeSut()
+    const { sut, emailValidatorSpy } = makeSut()
     const errorMock = new Error('some_error ')
-    jest.spyOn(emailValidatorStub, 'isValid')
+    jest.spyOn(emailValidatorSpy, 'isValid')
       .mockImplementationOnce(
         () => { throw errorMock }
       )
@@ -50,8 +48,8 @@ describe('Email Validation', () => {
   })
 
   test('Should return and error if EmailValidator returns false', async () => {
-    const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
+    const { sut, emailValidatorSpy } = makeSut()
+    emailValidatorSpy.isValidResult = false
     const httpRequest = mockRequest()
     const validationResult = sut.validate(httpRequest.body)
     expect(validationResult).toEqual(new InvalidParamError('email'))
