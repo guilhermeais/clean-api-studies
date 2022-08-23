@@ -7,9 +7,6 @@
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "[nginx]": {
-        "editor.defaultFormatter": "raynigon.nginx-formatter"
-    },
     "[typescript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
     },
