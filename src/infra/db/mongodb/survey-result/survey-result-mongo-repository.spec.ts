@@ -1,5 +1,6 @@
 import { AccountModel } from '@/domain/models/account'
 import { SurveyModel } from '@/domain/models/survey'
+import { mockAddAccountParams } from '@/domain/test'
 import { Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
@@ -34,11 +35,7 @@ async function makeSurvey (): Promise<SurveyModel> {
 }
 
 async function makeAccount (): Promise<AccountModel> {
-  const accountMock = {
-    name: 'any_name',
-    email: 'any_email@mail.com',
-    password: 'any_password'
-  }
+  const accountMock = mockAddAccountParams()
   const { insertedId } = await accountCollection.insertOne(accountMock)
   return MongoHelper.map(await accountCollection.findOne({ _id: insertedId }))
 }
