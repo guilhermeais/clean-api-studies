@@ -61,10 +61,10 @@ describe('DbLoadSurveyResult UseCase', () => {
   })
 
   test('Should return an SurveyResultModel with all answers with count 0 if LoadSurveyResultRepository returns null', async () => {
-    const { sut, loadSurveyResultRepositorySpy } = makeSut()
+    const { sut, loadSurveyResultRepositorySpy, loadSurveyByIdRepositorySpy } = makeSut()
     loadSurveyResultRepositorySpy.surveyResult = null
     const surveyResult = await sut.load('any_survey_id')
 
-    expect(surveyResult).toEqual(mockSurveyResultEmpty())
+    expect(surveyResult).toEqual(mockSurveyResultEmpty(loadSurveyByIdRepositorySpy.survey))
   })
 })

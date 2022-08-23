@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import { SurveyModel } from '../models/survey'
 import { SurveyResultModel } from '../models/survey-result'
 import { SaveSurveyResultParams } from '../usecases/survey-result/save-survey-result'
 import { mockSurvey } from './mock-survey'
@@ -24,8 +25,8 @@ export function mockSurveyResult (): SurveyResultModel {
   }
 }
 
-export function mockSurveyResultEmpty (): SurveyResultModel {
-  const survey = mockSurvey()
+export function mockSurveyResultEmpty (surveyModel?: SurveyModel): SurveyResultModel {
+  const survey = surveyModel || mockSurvey()
   return {
     ...survey,
     surveyId: survey.id,

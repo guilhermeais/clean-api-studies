@@ -1,55 +1,56 @@
+import { faker } from '@faker-js/faker'
 import { SurveyModel } from '../models/survey'
 import { AddSurveyParams } from '../usecases/survey/add-survey'
 
 export function mockAddSurveyParams (): AddSurveyParams {
   return {
-    question: 'any_question',
+    question: faker.lorem.sentence(),
     answers: [
       {
-        image: 'any_image',
-        answer: 'any_answer'
+        image: faker.image.imageUrl(),
+        answer: faker.lorem.sentence()
       }
     ],
-    date: new Date()
+    date: faker.date.recent()
   }
 }
 
 export function mockSurvey (): SurveyModel {
   return {
-    id: 'any_id',
-    question: 'any_question',
+    id: faker.datatype.uuid(),
+    question: faker.lorem.sentence(),
     answers: [
       {
-        image: 'any_image',
-        answer: 'any_answer'
+        image: faker.image.imageUrl(),
+        answer: faker.lorem.sentence()
       }
     ],
-    date: new Date()
+    date: faker.date.recent()
   }
 }
 
 export function mockSurveys (): SurveyModel[] {
   return [
     {
-      id: 'any_id',
-      question: 'any_question',
+      id: faker.datatype.uuid(),
+      question: faker.lorem.sentence(),
       answers: [
         {
-          image: 'any_image',
-          answer: 'any_answer'
+          image: faker.image.imageUrl(),
+          answer: faker.lorem.sentence()
         }
       ],
-      date: new Date()
+      date: faker.date.recent()
     },
     {
-      id: 'other_id',
-      question: 'other_question',
+      id: faker.datatype.uuid(),
+      question: faker.lorem.sentence(),
       answers: [
         {
-          answer: 'other_answer'
+          answer: faker.lorem.sentence()
         }
       ],
-      date: new Date()
+      date: faker.date.recent()
     }
   ]
 }
