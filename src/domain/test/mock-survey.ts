@@ -25,7 +25,8 @@ export function mockSurvey (): SurveyModel {
         answer: faker.lorem.sentence()
       }
     ],
-    date: faker.date.recent()
+    date: faker.date.recent(),
+    didAnswer: faker.datatype.boolean()
   }
 }
 
@@ -40,6 +41,7 @@ export function mockSurveys (): SurveyModel[] {
           answer: faker.lorem.sentence()
         }
       ],
+      didAnswer: faker.datatype.boolean(),
       date: faker.date.recent()
     },
     {
@@ -50,6 +52,7 @@ export function mockSurveys (): SurveyModel[] {
           answer: faker.lorem.sentence()
         }
       ],
+      didAnswer: faker.datatype.boolean(),
       date: faker.date.recent()
     }
   ]

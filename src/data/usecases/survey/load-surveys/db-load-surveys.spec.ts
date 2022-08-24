@@ -1,4 +1,5 @@
 import { LoadSurveysRepositorySpy } from '@/data/test'
+import { faker } from '@faker-js/faker'
 import MockDate from 'mockdate'
 import { DbLoadSurveys } from './db-load-surveys'
 
@@ -24,17 +25,17 @@ describe('DbLoadSurveys', () => {
   afterAll(() => {
     MockDate.reset()
   })
-  test('Should call LoadSurveysRepository', async () => {
+  test('Should call LoadSurveysRepository with correct accountId', async () => {
     const { sut, loadSurveysRepositorySpy } = makeSut()
-    jest.spyOn(loadSurveysRepositorySpy, 'loadAll')
-    await sut.load()
+    const accountId = faker.datatype.uuid()
+    await sut.load(accountId)
 
-    expect(loadSurveysRepositorySpy.loadAll).toHaveBeenCalled()
+    expect(loadSurveysRepositorySpy.accountId).toBe(accountId)
   })
 
   test('Should return a list of Surveys on success', async () => {
     const { sut, loadSurveysRepositorySpy } = makeSut()
-    const surveys = await sut.load()
+    const surveys = await sut.load(faker.datatype.uuid())
 
     expect(surveys).toEqual(loadSurveysRepositorySpy.surveys)
   })
@@ -44,7 +45,7 @@ describe('DbLoadSurveys', () => {
     const errorMock = new Error('some_error')
     jest.spyOn(loadSurveysRepositorySpy, 'loadAll').mockRejectedValue(errorMock)
 
-    const sutPromise = sut.load()
+    const sutPromise = sut.load(faker.datatype.uuid())
     await expect(sutPromise).rejects.toThrow(errorMock)
   })
 })

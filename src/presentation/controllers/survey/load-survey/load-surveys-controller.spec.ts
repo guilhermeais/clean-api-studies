@@ -2,6 +2,14 @@ import { LoadSurveysController } from './load-surveys-controller'
 import { noContent, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
 import { LoadSurveysSpy } from '@/presentation/test'
+import { HttpRequest } from './load-surveys-controller-protocols'
+import { faker } from '@faker-js/faker'
+
+function mockRequest (): HttpRequest {
+  return {
+    accountId: faker.datatype.uuid()
+  }
+}
 
 type SutTypes = {
   sut: LoadSurveysController
@@ -27,18 +35,17 @@ describe('LoadSurveys Controller', () => {
     MockDate.reset()
   })
 
-  test('Should call LoadSurveys', async () => {
+  test('Should call LoadSurveys with correct accountId', async () => {
     const { sut, loadSurveysSpy } = makeSut()
-    jest.spyOn(loadSurveysSpy, 'load')
-    const result = await sut.handle({})
+    const httpRequest = mockRequest()
+    await sut.handle(httpRequest)
 
-    expect(loadSurveysSpy.load).toHaveBeenCalled()
-    expect(result.body).toEqual(loadSurveysSpy.surveys)
+    expect(loadSurveysSpy.accountId).toEqual(httpRequest.accountId)
   })
 
   test('Should return 200 on success', async () => {
     const { sut, loadSurveysSpy } = makeSut()
-    const httpResponse = await sut.handle({})
+    const httpResponse = await sut.handle(mockRequest())
 
     expect(httpResponse).toEqual(ok(loadSurveysSpy.surveys))
   })
@@ -46,7 +53,7 @@ describe('LoadSurveys Controller', () => {
   test('Should return 204 if LoadSurveys returns empty', async () => {
     const { sut, loadSurveysSpy } = makeSut()
     loadSurveysSpy.surveys = []
-    const httpResponse = await sut.handle({})
+    const httpResponse = await sut.handle(mockRequest())
 
     expect(httpResponse).toEqual(noContent())
   })
