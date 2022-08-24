@@ -8,7 +8,7 @@ export const swaggerConfig = {
     title: 'Clean Node API',
     description:
       'API desenvolvida no [curso de NodeJS](https://www.udemy.com/course/tdd-com-mango).',
-    version: '1.0.0'
+    version: '1.1.0'
   },
   license: {
     name: 'ISC',
