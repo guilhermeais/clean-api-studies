@@ -4,6 +4,7 @@ import request from 'supertest'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import app from '../config/app'
 import env from '../config/env'
+import { mockSurveys } from '@/domain/test'
 
 let surveyCollection: Collection
 let accountCollection: Collection
@@ -62,28 +63,15 @@ describe('Survey Routes', () => {
 
     test('Should return 200 on save survey result with access token', async () => {
       const accessToken = await makeAccessToken()
+      const mockedSurveys = mockSurveys()
       const {
         insertedIds: { 0: surveyId }
-      } = await surveyCollection.insertMany([
-        {
-          question: 'Question',
-          answers: [
-            {
-              answer: 'Answer 1',
-              image: 'http://image-name.com'
-            },
-            {
-              answer: 'Answer 2'
-            }
-          ],
-          date: new Date()
-        }
-      ])
+      } = await surveyCollection.insertMany(mockedSurveys)
       await request(app)
         .put(`/api/surveys/${surveyId.toString()}/results`)
         .set('x-access-token', accessToken)
         .send({
-          answer: 'Answer 1'
+          answer: mockedSurveys[0].answers[0].answer
         })
         .expect(200)
     })
@@ -96,49 +84,16 @@ describe('Survey Routes', () => {
 
     test('Should return 200 on load survey result with access token', async () => {
       const accessToken = await makeAccessToken()
+      const mockedSurveys = mockSurveys()
+
       const {
         insertedIds: { 0: surveyId }
-      } = await surveyCollection.insertMany([
-        {
-          question: 'Question',
-          answers: [
-            {
-              answer: 'Answer 1',
-              image: 'http://image-name.com'
-            },
-            {
-              answer: 'Answer 2'
-            }
-          ],
-          date: new Date()
-        }
-      ])
+      } = await surveyCollection.insertMany(mockedSurveys)
 
       await request(app)
         .get(`/api/surveys/${surveyId.toString()}/results`)
         .set('x-access-token', accessToken)
         .expect(200)
-        .expect(res => {
-          expect(res.body).toEqual({
-            question: 'Question',
-            answers: [
-              {
-                answer: 'Answer 1',
-                image: 'http://image-name.com',
-                count: 0,
-                percent: 0
-              },
-              {
-                answer: 'Answer 2',
-                count: 0,
-                percent: 0
-              }
-            ],
-            surveyId: surveyId.toString(),
-            id: surveyId.toString(),
-            date: expect.any(String)
-          })
-        })
     })
   })
 })

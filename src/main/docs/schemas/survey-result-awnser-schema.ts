@@ -4,7 +4,8 @@ export const surveyResultAnswerSchema = {
     image: { type: 'string' },
     answer: { type: 'string' },
     count: { type: 'number' },
-    percent: { type: 'number' }
+    percent: { type: 'number' },
+    isCurrentAccountAnswer: { type: 'boolean' }
   },
-  required: ['answer', 'count', 'percent']
+  required: ['answer', 'count', 'percent', 'isCurrentAccountAnswer']
 }

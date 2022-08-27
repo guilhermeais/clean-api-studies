@@ -13,19 +13,22 @@ export function mockSurveyResult (): SurveyResultModel {
         image: faker.image.imageUrl(),
         answer: faker.lorem.sentence(),
         count: faker.datatype.number(),
-        percent: faker.datatype.number({ precision: 0.01 })
+        percent: faker.datatype.number({ precision: 0.01 }),
+        isCurrentAccountAnswer: faker.datatype.boolean()
       },
       {
         answer: faker.lorem.sentence(),
         count: faker.datatype.number(),
-        percent: faker.datatype.number({ precision: 0.01 })
+        percent: faker.datatype.number({ precision: 0.01 }),
+        isCurrentAccountAnswer: faker.datatype.boolean()
+
       }
     ],
     date: faker.date.recent()
   }
 }
 
-export function mockSurveyResultEmpty (surveyModel?: SurveyModel): SurveyResultModel {
+export function mockEmptySurveyResult (surveyModel?: SurveyModel): SurveyResultModel {
   const survey = surveyModel || mockSurvey()
   return {
     ...survey,
@@ -35,7 +38,8 @@ export function mockSurveyResultEmpty (surveyModel?: SurveyModel): SurveyResultM
     answers: survey.answers.map(answer => ({
       ...answer,
       count: 0,
-      percent: 0
+      percent: 0,
+      isCurrentAccountAnswer: false
     }))
   }
 }

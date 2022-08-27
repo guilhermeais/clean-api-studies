@@ -2,6 +2,7 @@ import { LoadSurveyResultRepository } from '@/data/protocols/db/survey-result/lo
 import { ObjectId } from 'mongodb'
 import { QueryBuilder } from '../helpers'
 import { MongoHelper } from '../helpers/mongo-helper'
+import round from 'mongo-round'
 import {
   SaveSurveyResultRepository,
   SaveSurveyResultParams,
@@ -28,7 +29,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
     )
   }
 
-  async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
+  async loadBySurveyId (surveyId: string, accountId: string): Promise<SurveyResultModel> {
     const surveyCollection = await MongoHelper.getCollection('surveyResults')
 
     const query = new QueryBuilder()
@@ -67,6 +68,17 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         },
         count: {
           $sum: 1
+        },
+        currentAccountAnswer: {
+          $push: {
+            $cond: [
+              {
+                $eq: ['$data.accountId', new ObjectId(accountId)]
+              },
+              '$data.answer',
+              null
+            ]
+          }
         }
       })
       .project({
@@ -106,6 +118,9 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
                       },
                       else: 0
                     }
+                  },
+                  isCurrentAccountAnswer: {
+                    $eq: ['$$item.answer', { $arrayElemAt: ['$currentAccountAnswer', 0] }]
                   }
                 }
               ]
@@ -147,7 +162,8 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
           question: '$question',
           date: '$date',
           answer: '$answers.answer',
-          image: '$answers.image'
+          image: '$answers.image',
+          isCurrentAccountAnswer: '$answers.isCurrentAccountAnswer'
         },
         count: {
           $sum: '$answers.count'
@@ -164,8 +180,9 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         answer: {
           answer: '$_id.answer',
           image: '$_id.image',
-          count: '$count',
-          percent: '$percent'
+          count: round('$count'),
+          percent: round('$percent'),
+          isCurrentAccountAnswer: '$_id.isCurrentAccountAnswer'
         }
       })
       .sort({
