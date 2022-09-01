@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker'
 import { SurveyModel } from '../models/survey'
-import { AddSurveyParams } from '../usecases/survey/add-survey'
+import { AddSurvey } from '../usecases/survey/add-survey'
 
-export function mockAddSurveyParams (): AddSurveyParams {
+export function mockAddSurveyParams (): AddSurvey.Params {
   return {
     question: faker.lorem.sentence(),
     answers: [
