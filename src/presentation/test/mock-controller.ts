@@ -1,11 +1,11 @@
 import { mockAccount } from '@/domain/test'
 import { ok } from '../helpers/http/http-helper'
-import { Controller, HttpRequest, HttpResponse } from '../protocols'
+import { Controller, HttpResponse } from '../protocols'
 
 export class ControllerSpy implements Controller {
-  httpRequest: HttpRequest
+  httpRequest: any
   httpResponse = ok(mockAccount)
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle (httpRequest: any): Promise<HttpResponse> {
     this.httpRequest = httpRequest
     return await Promise.resolve(this.httpResponse)
   }

@@ -1,14 +1,12 @@
-import { HttpRequest } from './auth-middleware-protocols'
 import { forbidden, ok, serverError } from '../helpers/http/http-helper'
 import { AccessDeniedError } from '../errors'
 import { AuthMiddleware } from './auth-middleware'
 import { LoadAccountByTokenSpy } from '../test'
+import { faker } from '@faker-js/faker'
 
-function mockRequest (): HttpRequest {
+function mockRequest (): AuthMiddleware.Request {
   return {
-    headers: {
-      'x-access-token': 'any_token'
-    }
+    accessToken: faker.datatype.uuid()
   }
 }
 
@@ -28,28 +26,28 @@ function makeSut (role?: string): SutTypes {
 describe('Auth Middleware', () => {
   test('Should return 403 if no x-access-token exists in headers', async () => {
     const { sut } = makeSut()
-    const httpRequest: HttpRequest = {}
+    const httpRequest: AuthMiddleware.Request = {}
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
   })
   test('Should call LoadAccountByToken with correct accessToken', async () => {
     const role = 'any_role'
     const { sut, loadAccountByTokenSpy } = makeSut(role)
-    const httpRequest: HttpRequest = mockRequest()
+    const httpRequest = mockRequest()
     await sut.handle(httpRequest)
-    expect(loadAccountByTokenSpy.accessToken).toBe('any_token')
+    expect(loadAccountByTokenSpy.accessToken).toBe(httpRequest.accessToken)
     expect(loadAccountByTokenSpy.role).toBe(role)
   })
   test('Should return 403 if LoadAccountByToken returns null', async () => {
     const { sut, loadAccountByTokenSpy } = makeSut()
     loadAccountByTokenSpy.account = null
-    const httpRequest: HttpRequest = mockRequest()
+    const httpRequest = mockRequest()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
   })
   test('Should return 200 if LoadAccountByToken returns an account', async () => {
     const { sut, loadAccountByTokenSpy } = makeSut()
-    const httpRequest: HttpRequest = mockRequest()
+    const httpRequest = mockRequest()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(ok({ accountId: loadAccountByTokenSpy.account.id }))
   })
@@ -58,7 +56,7 @@ describe('Auth Middleware', () => {
     const { sut, loadAccountByTokenSpy } = makeSut()
     const errorMock = new Error('some_error')
     jest.spyOn(loadAccountByTokenSpy, 'load').mockRejectedValueOnce(errorMock)
-    const httpRequest: HttpRequest = mockRequest()
+    const httpRequest = mockRequest()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(serverError(errorMock))
   })

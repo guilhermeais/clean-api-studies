@@ -1,18 +1,19 @@
 import { NextFunction, Request, Response } from 'express'
-import { HttpRequest, Middleware } from '@/presentation/protocols'
+import { Middleware } from '@/presentation/protocols'
 
 export function adaptMiddleware (middleware: Middleware) {
   return async function (req: Request, res: Response, next: NextFunction): Promise<void> {
-    const httpRequest: HttpRequest = {
-      headers: req.headers
+    const httpRequest: any = {
+      accessToken: req.headers?.['x-access-token'],
+      ...(req.headers || {})
     }
     try {
-      const httpResponse = await middleware.handle(httpRequest)
-      if (httpResponse.statusCode === 200) {
-        Object.assign(req, httpResponse.body)
+      const request = await middleware.handle(httpRequest)
+      if (request.statusCode >= 200 && request.statusCode <= 299) {
+        Object.assign(req, request.body)
         return next()
       } else {
-        res.status(httpResponse.statusCode).json(httpResponse.body)
+        res.status(request.statusCode).json(request.body)
       }
     } catch (error) {
       res.status(500).json({

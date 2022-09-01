@@ -2,10 +2,9 @@ import { LoadSurveysController } from './load-surveys-controller'
 import { noContent, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
 import { LoadSurveysSpy } from '@/presentation/test'
-import { HttpRequest } from './load-surveys-controller-protocols'
 import { faker } from '@faker-js/faker'
 
-function mockRequest (): HttpRequest {
+function mockRequest (): LoadSurveysController.Request {
   return {
     accountId: faker.datatype.uuid()
   }
@@ -37,10 +36,10 @@ describe('LoadSurveys Controller', () => {
 
   test('Should call LoadSurveys with correct accountId', async () => {
     const { sut, loadSurveysSpy } = makeSut()
-    const httpRequest = mockRequest()
-    await sut.handle(httpRequest)
+    const request = mockRequest()
+    await sut.handle(request)
 
-    expect(loadSurveysSpy.accountId).toEqual(httpRequest.accountId)
+    expect(loadSurveysSpy.accountId).toEqual(request.accountId)
   })
 
   test('Should return 200 on success', async () => {
@@ -62,8 +61,8 @@ describe('LoadSurveys Controller', () => {
     const { sut, loadSurveysSpy } = makeSut()
     const errorMock = new Error('some_error')
     jest.spyOn(loadSurveysSpy, 'load').mockRejectedValueOnce(errorMock)
-    const httpRequest = {}
-    const httpResponse = await sut.handle(httpRequest)
+    const request = mockRequest()
+    const httpResponse = await sut.handle(request)
     expect(httpResponse).toEqual(serverError(errorMock))
   })
 })
