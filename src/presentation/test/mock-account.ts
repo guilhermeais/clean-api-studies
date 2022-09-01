@@ -1,6 +1,6 @@
 import { mockAccount } from '@/domain/test'
 import { AddAccount } from '../controllers/login/signup/signup-controller-protocols'
-import { AccountModel, LoadAccountByToken } from '../middlewares/auth-middleware-protocols'
+import { LoadAccountByToken } from '../middlewares/auth-middleware-protocols'
 
 export class AddAccountSpy implements AddAccount {
   addAccountParams: AddAccount.Params
@@ -13,12 +13,10 @@ export class AddAccountSpy implements AddAccount {
 }
 
 export class LoadAccountByTokenSpy implements LoadAccountByToken {
-  accessToken: string
-  role: string
+  loadAccountByTokenParams: LoadAccountByToken.Params
   account = mockAccount()
-  async load (accessToken: string, role?: string): Promise<AccountModel> {
-    this.accessToken = accessToken
-    this.role = role
+  async load (loadAccountByTokenParams: LoadAccountByToken.Params): Promise<LoadAccountByToken.Result> {
+    this.loadAccountByTokenParams = loadAccountByTokenParams
     return await Promise.resolve(this.account)
   }
 }

@@ -82,7 +82,7 @@ describe('Account Mongo Repository', () => {
         accessToken
       }
       await accountCollection.insertOne(mockAccountInput)
-      const account = await sut.loadByToken(accessToken)
+      const account = await sut.loadByToken({ accessToken })
 
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
@@ -100,7 +100,7 @@ describe('Account Mongo Repository', () => {
         role: 'admin'
       }
       await accountCollection.insertOne(mockAccountInput)
-      const account = await sut.loadByToken(accessToken, 'admin')
+      const account = await sut.loadByToken({ accessToken, role: 'admin' })
 
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
@@ -117,7 +117,7 @@ describe('Account Mongo Repository', () => {
         accessToken
       }
       await accountCollection.insertOne(mockAccountInput)
-      const account = await sut.loadByToken(accessToken, 'admin')
+      const account = await sut.loadByToken({ accessToken, role: 'admin' })
 
       expect(account).toBeFalsy()
     })
@@ -131,7 +131,7 @@ describe('Account Mongo Repository', () => {
         role: 'admin'
       }
       await accountCollection.insertOne(mockAccountInput)
-      const account = await sut.loadByToken(accessToken)
+      const account = await sut.loadByToken({ accessToken })
 
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
@@ -142,7 +142,7 @@ describe('Account Mongo Repository', () => {
 
     test('Should return null if loadByEmail fails', async () => {
       const sut = new AccountMongoRepository()
-      const account = await sut.loadByToken('any_token')
+      const account = await sut.loadByToken({ accessToken: 'any_token' })
       expect(account).toBeFalsy()
     })
   })
