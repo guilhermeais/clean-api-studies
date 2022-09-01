@@ -57,18 +57,18 @@ describe('DbAddAccount Usecase', () => {
     await expect(sutPromise).rejects.toThrow(new Error('some_error'))
   })
 
-  test('Should return an account on success', async () => {
-    const { sut, addAccountRepositorySpy } = makeSut()
+  test('Should return true if LoadAccountByEmailRepository returns null', async () => {
+    const { sut } = makeSut()
     const fakeAccount = mockAccount()
-    const account = await sut.add(fakeAccount)
-    expect(account).toEqual(addAccountRepositorySpy.account)
+    const isValid = await sut.add(fakeAccount)
+    expect(isValid).toBe(true)
   })
 
-  test('Should return null if LoadAccountByEmailRepository not returns null', async () => {
+  test('Should return false if LoadAccountByEmailRepository returns an account', async () => {
     const { sut, loadAccountByEmailRepositorySpy } = makeSut()
     loadAccountByEmailRepositorySpy.account = mockAccount()
-    const account = await sut.add(loadAccountByEmailRepositorySpy.account)
-    expect(account).toBeNull()
+    const isValid = await sut.add(loadAccountByEmailRepositorySpy.account)
+    expect(isValid).toBe(false)
   })
 
   test('Should call LoadAccountByEmailRepository with correct email', async () => {
