@@ -49,7 +49,7 @@ describe('DbAuthentication UseCase', () => {
 
   test('Should return null if LoadAccountByEmailRepository returns null', async () => {
     const { sut, loadAccountByEmailRepositorySpy } = makeSut()
-    loadAccountByEmailRepositorySpy.account = null
+    loadAccountByEmailRepositorySpy.result = null
     const authenticationModel = await sut.auth(mockAuthentication())
 
     expect(authenticationModel).toBeNull()
@@ -61,7 +61,7 @@ describe('DbAuthentication UseCase', () => {
     await sut.auth(authenticationMock)
 
     expect(hashComparerSpy.plaintext).toBe(authenticationMock.password)
-    expect(hashComparerSpy.digest).toBe(loadAccountByEmailRepositorySpy.account.password)
+    expect(hashComparerSpy.digest).toBe(loadAccountByEmailRepositorySpy.result.password)
   })
 
   test('Should throw if HashComparer throws', async () => {
@@ -86,7 +86,7 @@ describe('DbAuthentication UseCase', () => {
     const authenticationMock = mockAuthentication()
     await sut.auth(authenticationMock)
 
-    expect(encrypterSpy.plaintext).toBe(loadAccountByEmailRepositorySpy.account.id)
+    expect(encrypterSpy.plaintext).toBe(loadAccountByEmailRepositorySpy.result.id)
   })
 
   test('Should throw if Encrypter throws', async () => {
@@ -104,7 +104,7 @@ describe('DbAuthentication UseCase', () => {
     const { accessToken, name } = await sut.auth(mockAuthentication())
 
     expect(accessToken).toBe(encrypterSpy.ciphertext)
-    expect(name).toBe(loadAccountByEmailRepositorySpy.account.name)
+    expect(name).toBe(loadAccountByEmailRepositorySpy.result.name)
   })
 
   test('Should call UpdateAccessTokenRepository with correct values', async () => {
@@ -112,7 +112,7 @@ describe('DbAuthentication UseCase', () => {
     const authenticationMock = mockAuthentication()
     await sut.auth(authenticationMock)
 
-    expect(updateAccessTokenRepositorySpy.id).toBe(loadAccountByEmailRepositorySpy.account.id)
+    expect(updateAccessTokenRepositorySpy.id).toBe(loadAccountByEmailRepositorySpy.result.id)
     expect(updateAccessTokenRepositorySpy.token).toBe(encrypterSpy.ciphertext)
   })
 

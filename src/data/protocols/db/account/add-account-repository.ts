@@ -1,4 +1,3 @@
-import { AccountModel } from '@/domain/models/account'
 import { AddAccount } from '@/domain/usecases/account/add-account'
 
 export interface AddAccountRepository {
@@ -8,6 +7,6 @@ export interface AddAccountRepository {
 export namespace AddAccountRepository {
   export type Params = AddAccount.Params
 
-  export type Result = AccountModel
+  export type Result = boolean
 
 }
