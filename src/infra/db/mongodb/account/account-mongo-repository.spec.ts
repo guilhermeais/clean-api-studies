@@ -55,8 +55,7 @@ describe('Account Mongo Repository', () => {
       const sut = new AccountMongoRepository()
       const mockAccountInput = mockAddAccountParams()
 
-      const { insertedId } = await accountCollection.insertOne(mockAccountInput)
-      const id = insertedId
+      const { insertedId: id } = await accountCollection.insertOne(mockAccountInput)
       const account = await accountCollection.findOne({ _id: id })
       expect(account).toBeTruthy()
 
@@ -81,9 +80,6 @@ describe('Account Mongo Repository', () => {
 
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
-      expect(account.name).toBe(mockAccountInput.name)
-      expect(account.email).toBe(mockAccountInput.email)
-      expect(account.password).toBe(mockAccountInput.password)
     })
 
     test('Should return an account on loadByToken with admin role', async () => {
@@ -99,9 +95,6 @@ describe('Account Mongo Repository', () => {
 
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
-      expect(account.name).toBe(mockAccountInput.name)
-      expect(account.email).toBe(mockAccountInput.email)
-      expect(account.password).toBe(mockAccountInput.password)
     })
 
     test('Should return null on loadByToken with invalid role', async () => {
@@ -130,9 +123,6 @@ describe('Account Mongo Repository', () => {
 
       expect(account).toBeTruthy()
       expect(account.id).toBeTruthy()
-      expect(account.name).toBe(mockAccountInput.name)
-      expect(account.email).toBe(mockAccountInput.email)
-      expect(account.password).toBe(mockAccountInput.password)
     })
 
     test('Should return null if loadByEmail fails', async () => {

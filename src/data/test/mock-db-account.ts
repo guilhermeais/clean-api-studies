@@ -1,4 +1,3 @@
-import { mockAccount } from '@/domain/test'
 import { faker } from '@faker-js/faker'
 import { AddAccountRepository } from '../protocols/db/account/add-account-repository'
 import { LoadAccountByTokenRepository } from '../protocols/db/account/load-account-by-token-repository'
@@ -29,13 +28,16 @@ export class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailReposi
 }
 
 export class LoadAccountByTokenRepositorySpy implements LoadAccountByTokenRepository {
-  account = mockAccount()
+  result = {
+    id: faker.datatype.uuid()
+  }
+
   loadAccountByTokenRepositoryParams: LoadAccountByTokenRepository.Params
 
   async loadByToken (loadAccountByTokenRepositoryParams: LoadAccountByTokenRepository.Params): Promise<LoadAccountByTokenRepository.Result> {
     this.loadAccountByTokenRepositoryParams = loadAccountByTokenRepositoryParams
 
-    return await Promise.resolve(this.account)
+    return await Promise.resolve(this.result)
   }
 }
 

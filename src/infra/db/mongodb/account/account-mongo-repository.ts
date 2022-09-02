@@ -3,7 +3,6 @@ import { AddAccountRepository } from '@/data/protocols/db/account/add-account-re
 import { LoadAccountByEmailRepository } from '@/data/protocols/db/account/load-account-by-email-repository'
 import { LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
 import { UpdateAccessTokenRepository } from '@/data/protocols/db/account/update-access-token-repository'
-import { AccountModel } from '@/domain/models/account'
 import { MongoHelper } from '../helpers/mongo-helper'
 
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository, LoadAccountByTokenRepository {
@@ -35,7 +34,7 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
 
   async updateAccessToken (id: string, token: string): Promise<void> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-    await accountCollection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: { accessToken: token } })
+    await accountCollection.updateOne({ _id: new ObjectId(id) }, { $set: { accessToken: token } })
   }
 
   async loadByToken (params: LoadAccountByTokenRepository.Params): Promise<LoadAccountByTokenRepository.Result> {
@@ -52,9 +51,14 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
             role: 'admin'
           }
         ]
+      },
+      {
+        projection: {
+          _id: 1
+        }
       }
     )
 
-    return accountMongo && MongoHelper.map(accountMongo) as AccountModel
+    return accountMongo && MongoHelper.map(accountMongo)
   }
 }

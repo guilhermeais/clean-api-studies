@@ -1,4 +1,4 @@
-import { mockAccount } from '@/domain/test'
+import { mockAddAccountParams } from '@/domain/test'
 import { InvalidParamError } from '@/presentation/errors'
 import { EmailValidatorSpy } from '@/validation/test'
 import { EmailValidation } from './email-validation'
@@ -9,7 +9,7 @@ type SutTypes = {
 }
 
 function mockRequest (): any {
-  const account = mockAccount()
+  const account = mockAddAccountParams()
   return {
     body: {
       ...account,

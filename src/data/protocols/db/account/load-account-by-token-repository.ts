@@ -1,4 +1,3 @@
-import { AccountModel } from '@/data/usecases/account/add-account/db-add-account-protocols'
 
 export interface LoadAccountByTokenRepository {
   loadByToken: (params: LoadAccountByTokenRepository.Params) => Promise<LoadAccountByTokenRepository.Result|null>
@@ -10,6 +9,8 @@ export namespace LoadAccountByTokenRepository {
     role?: string
   }
 
-  export type Result = AccountModel
+  export type Result = {
+    id: string
+  }
 
 }

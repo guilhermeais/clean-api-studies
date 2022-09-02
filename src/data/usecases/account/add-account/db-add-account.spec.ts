@@ -1,5 +1,5 @@
 import { DbAddAccount } from './db-add-account'
-import { mockAccount, mockAddAccountParams } from '@/domain/test'
+import { mockAddAccountParams } from '@/domain/test'
 import { HasherSpy, AddAccountRepositorySpy, LoadAccountByEmailRepositorySpy } from '@/data/test'
 import { faker } from '@faker-js/faker'
 
@@ -27,7 +27,7 @@ function makeSut (): SutTypes {
 describe('DbAddAccount Usecase', () => {
   test('Should call Hasher with correct password', async () => {
     const { sut, hasherSpy } = makeSut()
-    const account = mockAccount()
+    const account = mockAddAccountParams()
     await sut.add(account)
     expect(hasherSpy.plaintext).toBe(account.password)
   })
@@ -37,14 +37,14 @@ describe('DbAddAccount Usecase', () => {
     jest.spyOn(hasherSpy, 'hash')
       .mockRejectedValueOnce(new Error('some_error'))
 
-    const sutPromise = sut.add(mockAccount())
+    const sutPromise = sut.add(mockAddAccountParams())
     await expect(sutPromise).rejects.toThrow(new Error('some_error'))
   })
 
   test('Should call AddAccountRepository with correct values', async () => {
     const { sut, addAccountRepositorySpy, hasherSpy } = makeSut()
     jest.spyOn(addAccountRepositorySpy, 'add')
-    const accountData = mockAccount()
+    const accountData = mockAddAccountParams()
     await sut.add(accountData)
     expect(addAccountRepositorySpy.addAccountParams).toEqual({ ...accountData, password: hasherSpy.digest })
   })
@@ -54,13 +54,13 @@ describe('DbAddAccount Usecase', () => {
     jest.spyOn(addAccountRepositorySpy, 'add')
       .mockRejectedValueOnce(new Error('some_error'))
 
-    const sutPromise = sut.add(mockAccount())
+    const sutPromise = sut.add(mockAddAccountParams())
     await expect(sutPromise).rejects.toThrow(new Error('some_error'))
   })
 
   test('Should return true on success', async () => {
     const { sut } = makeSut()
-    const fakeAccount = mockAccount()
+    const fakeAccount = mockAddAccountParams()
     const isValid = await sut.add(fakeAccount)
     expect(isValid).toBe(true)
   })
@@ -68,7 +68,7 @@ describe('DbAddAccount Usecase', () => {
   test('Should return false if addAccountRepositorySpy returns false', async () => {
     const { sut, addAccountRepositorySpy } = makeSut()
     addAccountRepositorySpy.isValid = false
-    const fakeAccount = mockAccount()
+    const fakeAccount = mockAddAccountParams()
     const isValid = await sut.add(fakeAccount)
     expect(isValid).toBe(false)
   })
@@ -87,7 +87,7 @@ describe('DbAddAccount Usecase', () => {
   test('Should call LoadAccountByEmailRepository with correct email', async () => {
     const { sut, loadAccountByEmailRepositorySpy } = makeSut()
 
-    const fakeAccount = mockAccount()
+    const fakeAccount = mockAddAccountParams()
     await sut.add(fakeAccount)
 
     expect(loadAccountByEmailRepositorySpy.email).toBe(fakeAccount.email)
