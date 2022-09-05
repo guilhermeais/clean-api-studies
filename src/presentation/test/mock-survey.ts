@@ -1,4 +1,5 @@
 import { mockSurvey, mockSurveys } from '@/domain/test'
+import { CheckSurveyById } from '../controllers/survey-result/load-survey-result/load-survey-result-controller-protocols'
 import { LoadSurveyById } from '../controllers/survey-result/save-survey-result/save-survey-result-controller-protocols'
 import {
   AddSurvey
@@ -30,5 +31,14 @@ export class LoadSurveyByIdSpy implements LoadSurveyById {
   async loadById (surveyId: string): Promise<SurveyModel> {
     this.surveyId = surveyId
     return await Promise.resolve(this.survey)
+  }
+}
+
+export class CheckSurveyByIdSpy implements CheckSurveyById {
+  surveyId: string
+  result = true
+  async checkById (surveyId: string): Promise<CheckSurveyById.Result> {
+    this.surveyId = surveyId
+    return await Promise.resolve(this.result)
   }
 }

@@ -1,4 +1,5 @@
 import { mockAddAccountParams } from '@/domain/test'
+import { faker } from '@faker-js/faker'
 import { Collection } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account-mongo-repository'
@@ -50,6 +51,24 @@ describe('Account Mongo Repository', () => {
       expect(account).toBeFalsy()
     })
   })
+
+  describe('checkByEmail', () => {
+    test('Should return true if account is valid', async () => {
+      const sut = new AccountMongoRepository()
+      const mockAccountInput = mockAddAccountParams()
+
+      await accountCollection.insertOne(mockAccountInput)
+      const account = await sut.checkByEmail(mockAccountInput.email)
+
+      expect(account).toBe(true)
+    })
+    test('Should return false if account not exists', async () => {
+      const sut = new AccountMongoRepository()
+      const account = await sut.checkByEmail(faker.internet.email())
+
+      expect(account).toBe(false)
+    })
+  })
   describe('updateAccessToken()', () => {
     test('Should update the account accessToken on updateAccessToken success', async () => {
       const sut = new AccountMongoRepository()
@@ -67,7 +86,7 @@ describe('Account Mongo Repository', () => {
     })
   })
 
-  describe('loadByToken', () => {
+  describe('loadByToken()', () => {
     test('Should return an account on loadByToken without role', async () => {
       const sut = new AccountMongoRepository()
       const accessToken = 'any_token'

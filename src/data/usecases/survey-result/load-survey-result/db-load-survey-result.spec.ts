@@ -73,6 +73,6 @@ describe('DbLoadSurveyResult UseCase', () => {
     loadSurveyResultRepositorySpy.surveyResult = null
     const surveyResult = await sut.load(surveyId, accountId)
 
-    expect(surveyResult).toEqual(mockEmptySurveyResult(loadSurveyByIdRepositorySpy.survey))
+    expect(surveyResult).toEqual(mockEmptySurveyResult(loadSurveyByIdRepositorySpy.result))
   })
 })

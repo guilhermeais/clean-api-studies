@@ -1,4 +1,4 @@
-import { EncrypterSpy, HashComparerSpy, LoadAccountByEmailRepositorySpy, UpdateAccessTokenRepositorySpy } from '@/data/test'
+import { EncrypterSpy, HashComparerSpy, UpdateAccessTokenRepositorySpy, LoadAccountByEmailRepositorySpy } from '@/data/test'
 import { mockAuthentication } from '@/domain/test'
 import { DbAuthentication } from './db-authentication'
 

@@ -1,3 +1,4 @@
+import { CheckSurveyByIdRepository } from '@/data/protocols/db/survey'
 import { LoadSurveysRepository } from '@/data/protocols/db/survey/load-surveys-repository'
 import { AddSurveyRepository } from '@/data/usecases/survey/add-survey/db-add-survey-protocols'
 import { LoadSurveyByIdRepository } from '@/data/usecases/survey/load-survey-by-id/db-load-survey-by-id-protocols'
@@ -6,7 +7,7 @@ import { ObjectId } from 'mongodb'
 import { QueryBuilder } from '../helpers'
 import { MongoHelper } from '../helpers/mongo-helper'
 
-export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository {
+export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository, CheckSurveyByIdRepository {
   async add (data: AddSurveyRepository.Params): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.insertOne(data)
@@ -48,13 +49,28 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     return MongoHelper.mapCollection(surveys)
   }
 
-  async loadById (id: string): Promise<SurveyModel> {
+  async loadById (id: string): Promise<LoadSurveyByIdRepository.Result> {
     if (id && id.length >= 24) {
       const surveyCollection = await MongoHelper.getCollection('surveys')
-      const survey = (await surveyCollection.findOne({ _id: ObjectId.createFromHexString(id) }) as unknown) as SurveyModel
+      const survey = (await surveyCollection.findOne({ _id: new ObjectId(id) }) as unknown) as SurveyModel
       return survey && MongoHelper.map(survey)
     }
 
     return null
+  }
+
+  async checkById (id: string): Promise<CheckSurveyByIdRepository.Result> {
+    console.log(id)
+
+    const surveyCollection = await MongoHelper.getCollection('surveys')
+    const survey = (await surveyCollection
+      .findOne(
+        { _id: new ObjectId(id) }, {
+          projection: {
+            _id: 1
+          }
+        }
+      ) as unknown) as SurveyModel
+    return survey !== null
   }
 }

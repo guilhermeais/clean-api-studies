@@ -3,13 +3,13 @@ import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-hel
 import {
   Controller,
   HttpResponse,
-  LoadSurveyById,
-  LoadSurveyResult
+  LoadSurveyResult,
+  CheckSurveyById
 } from './load-survey-result-controller-protocols'
 
 export class LoadSurveyResultController implements Controller {
   constructor (
-    private readonly loadSurveyById: LoadSurveyById,
+    private readonly checkSurveyById: CheckSurveyById,
     private readonly loadSurveyResult: LoadSurveyResult
   ) {}
 
@@ -17,8 +17,8 @@ export class LoadSurveyResultController implements Controller {
     try {
       const { surveyId } = request
       const { accountId } = request
-      const survey = await this.loadSurveyById.loadById(surveyId)
-      if (!survey) {
+      const surveyExists = await this.checkSurveyById.checkById(surveyId)
+      if (!surveyExists) {
         return forbidden(new InvalidParamError('surveyId'))
       }
 
