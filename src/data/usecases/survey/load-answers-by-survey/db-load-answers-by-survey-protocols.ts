@@ -1,2 +1,2 @@
-export * from '@/data/protocols/db/survey/load-survey-by-id-repository'
+export * from '@/data/protocols/db/survey'
 export * from '@/domain/models/survey'

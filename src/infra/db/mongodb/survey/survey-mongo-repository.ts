@@ -1,5 +1,4 @@
-import { CheckSurveyByIdRepository } from '@/data/protocols/db/survey'
-import { LoadSurveysRepository } from '@/data/protocols/db/survey/load-surveys-repository'
+import { LoadAnswersBySurveyRepository, LoadSurveysRepository, CheckSurveyByIdRepository } from '@/data/protocols/db/survey'
 import { AddSurveyRepository } from '@/data/usecases/survey/add-survey/db-add-survey-protocols'
 import { LoadSurveyByIdRepository } from '@/data/usecases/survey/load-answers-by-survey/db-load-answers-by-survey-protocols'
 import { SurveyModel } from '@/domain/models/survey'
@@ -7,7 +6,7 @@ import { ObjectId } from 'mongodb'
 import { QueryBuilder } from '../helpers'
 import { MongoHelper } from '../helpers/mongo-helper'
 
-export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository, CheckSurveyByIdRepository {
+export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository, CheckSurveyByIdRepository, LoadAnswersBySurveyRepository {
   async add (data: AddSurveyRepository.Params): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.insertOne(data)
@@ -54,6 +53,26 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
       const surveyCollection = await MongoHelper.getCollection('surveys')
       const survey = (await surveyCollection.findOne({ _id: new ObjectId(id) }) as unknown) as SurveyModel
       return survey && MongoHelper.map(survey)
+    }
+
+    return null
+  }
+
+  async loadAnswers (id: string): Promise<LoadAnswersBySurveyRepository.Result> {
+    if (id && id.length >= 24) {
+      const surveyCollection = await MongoHelper.getCollection('surveys')
+      const query = new QueryBuilder()
+        .match({
+          _id: new ObjectId(id)
+        })
+        .project({
+          _id: 0,
+          answers: '$answers.answer'
+        })
+        .build()
+
+      const surveys = await surveyCollection.aggregate(query).toArray() as any[]
+      return surveys[0]?.answers || []
     }
 
     return null
