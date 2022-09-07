@@ -1,7 +1,7 @@
 import { CheckSurveyByIdRepository } from '@/data/protocols/db/survey'
 import { LoadSurveysRepository } from '@/data/protocols/db/survey/load-surveys-repository'
 import { AddSurveyRepository } from '@/data/usecases/survey/add-survey/db-add-survey-protocols'
-import { LoadSurveyByIdRepository } from '@/data/usecases/survey/load-survey-by-id/db-load-survey-by-id-protocols'
+import { LoadSurveyByIdRepository } from '@/data/usecases/survey/load-answers-by-survey/db-load-answers-by-survey-protocols'
 import { SurveyModel } from '@/domain/models/survey'
 import { ObjectId } from 'mongodb'
 import { QueryBuilder } from '../helpers'
@@ -60,8 +60,6 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
   }
 
   async checkById (id: string): Promise<CheckSurveyByIdRepository.Result> {
-    console.log(id)
-
     const surveyCollection = await MongoHelper.getCollection('surveys')
     const survey = (await surveyCollection
       .findOne(

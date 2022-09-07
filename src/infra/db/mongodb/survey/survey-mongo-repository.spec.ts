@@ -2,7 +2,6 @@ import { mockAddAccountParams, mockAddSurveyParams } from '@/domain/test'
 import { Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
-import FakeObjectId from 'bson-objectid'
 
 function makeSut (): SurveyMongoRepository {
   return new SurveyMongoRepository()
@@ -112,7 +111,7 @@ describe('Survey Mongo Repository', () => {
 
     test('Should return null if survey does not exists', async () => {
       const sut = makeSut()
-      const survey = await sut.checkById(new FakeObjectId().toHexString())
+      const survey = await sut.checkById(new ObjectId().toHexString())
       expect(survey).toBe(false)
     })
   })

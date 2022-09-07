@@ -1,6 +1,7 @@
-import { mockSurvey, mockSurveys } from '@/domain/test'
+import { mockSurveys } from '@/domain/test'
+import { faker } from '@faker-js/faker'
 import { CheckSurveyById } from '../controllers/survey-result/load-survey-result/load-survey-result-controller-protocols'
-import { LoadSurveyById } from '../controllers/survey-result/save-survey-result/save-survey-result-controller-protocols'
+import { LoadAnswersBySurvey } from '../controllers/survey-result/save-survey-result/save-survey-result-controller-protocols'
 import {
   AddSurvey
 } from '../controllers/survey/add-survey/add-survey-controller-protocols'
@@ -25,12 +26,16 @@ export class LoadSurveysSpy implements LoadSurveys {
   }
 }
 
-export class LoadSurveyByIdSpy implements LoadSurveyById {
+export class LoadAnswersBySurveySpy implements LoadAnswersBySurvey {
   surveyId: string
-  survey = mockSurvey()
-  async loadById (surveyId: string): Promise<SurveyModel> {
+  result = [
+    faker.random.word(),
+    faker.random.word()
+  ]
+
+  async loadAnswers (surveyId: string): Promise<LoadAnswersBySurvey.Result> {
     this.surveyId = surveyId
-    return await Promise.resolve(this.survey)
+    return await Promise.resolve(this.result)
   }
 }
 

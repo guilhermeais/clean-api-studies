@@ -3,7 +3,7 @@ import { CheckSurveyByIdRepository } from '../protocols/db/survey'
 import { AddSurveyRepository } from '../protocols/db/survey/add-survey-repository'
 import { LoadSurveyByIdRepository } from '../protocols/db/survey/load-survey-by-id-repository'
 import { LoadSurveysRepository } from '../protocols/db/survey/load-surveys-repository'
-import { SurveyModel } from '../usecases/survey/load-survey-by-id/db-load-survey-by-id-protocols'
+import { SurveyModel } from '../usecases/survey/load-answers-by-survey/db-load-answers-by-survey-protocols'
 
 export class AddSurveyRepositorySpy implements AddSurveyRepository {
   addSurveyParams: AddSurveyRepository.Params
