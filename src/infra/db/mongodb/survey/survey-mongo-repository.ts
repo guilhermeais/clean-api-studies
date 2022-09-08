@@ -1,18 +1,14 @@
-import { LoadAnswersBySurveyRepository, LoadSurveysRepository, CheckSurveyByIdRepository } from '@/data/protocols/db/survey'
-import { AddSurveyRepository } from '@/data/usecases/survey/add-survey/db-add-survey-protocols'
-import { LoadSurveyByIdRepository } from '@/data/usecases/survey/load-answers-by-survey/db-load-answers-by-survey-protocols'
-import { SurveyModel } from '@/domain/models/survey'
-import { ObjectId } from 'mongodb'
-import { QueryBuilder } from '../helpers'
-import { MongoHelper } from '../helpers/mongo-helper'
+import { LoadAnswersBySurveyRepository, LoadSurveysRepository, CheckSurveyByIdRepository, AddSurveyRepository, LoadSurveyByIdRepository } from './survey-mongo-repository-protocols'
+import { QueryBuilder, MongoHelper } from '@/infra/db/mongodb/helpers'
 
+import { ObjectId } from 'mongodb'
 export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository, CheckSurveyByIdRepository, LoadAnswersBySurveyRepository {
   async add (data: AddSurveyRepository.Params): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.insertOne(data)
   }
 
-  async loadAll (accountId: string): Promise<SurveyModel[]> {
+  async loadAll (accountId: string): Promise<LoadSurveysRepository.Result> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
 
     const query = new QueryBuilder()
@@ -51,7 +47,7 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
   async loadById (id: string): Promise<LoadSurveyByIdRepository.Result> {
     if (id && id.length >= 24) {
       const surveyCollection = await MongoHelper.getCollection('surveys')
-      const survey = (await surveyCollection.findOne({ _id: new ObjectId(id) }) as unknown) as SurveyModel
+      const survey = (await surveyCollection.findOne({ _id: new ObjectId(id) }))
       return survey && MongoHelper.map(survey)
     }
 
@@ -87,7 +83,8 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
             _id: 1
           }
         }
-      ) as unknown) as SurveyModel
+      ))
+
     return survey !== null
   }
 }
