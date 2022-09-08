@@ -1,10 +1,9 @@
 import { faker } from '@faker-js/faker'
 import { SurveyModel } from '../models/survey'
-import { SurveyResultModel } from '../models/survey-result'
-import { SaveSurveyResultParams } from '../usecases/survey-result/save-survey-result'
+import { SaveSurveyResult } from '../usecases/survey-result'
 import { mockSurvey } from './mock-survey'
 
-export function mockSurveyResult (): SurveyResultModel {
+export function mockSurveyResult (): SaveSurveyResult.Result {
   return {
     surveyId: faker.datatype.uuid(),
     question: faker.lorem.sentence(),
@@ -28,7 +27,7 @@ export function mockSurveyResult (): SurveyResultModel {
   }
 }
 
-export function mockEmptySurveyResult (surveyModel?: SurveyModel): SurveyResultModel {
+export function mockEmptySurveyResult (surveyModel?: SurveyModel): SaveSurveyResult.Result {
   const survey = surveyModel || mockSurvey()
   return {
     ...survey,
@@ -44,7 +43,7 @@ export function mockEmptySurveyResult (surveyModel?: SurveyModel): SurveyResultM
   }
 }
 
-export function mockSaveSurveyResultParams (): SaveSurveyResultParams {
+export function mockSaveSurveyResultParams (): SaveSurveyResult.Params {
   return {
     accountId: faker.datatype.uuid(),
     surveyId: faker.datatype.uuid(),

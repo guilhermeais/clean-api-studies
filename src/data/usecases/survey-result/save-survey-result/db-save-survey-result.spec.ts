@@ -35,7 +35,7 @@ describe('DbSaveSurveyResult Usecase', () => {
     const saveSurveyData = mockSaveSurveyResultParams()
     await sut.save(saveSurveyData)
 
-    expect(saveSurveyResultRepositorySpy.saveSurveyResultParams).toEqual(saveSurveyData)
+    expect(saveSurveyResultRepositorySpy.params).toEqual(saveSurveyData)
   })
 
   test('should call LoadSurveyResultRepository with correct values', async () => {
@@ -69,6 +69,6 @@ describe('DbSaveSurveyResult Usecase', () => {
     const saveSurveyData = mockSaveSurveyResultParams()
     const surveyResult = await sut.save(saveSurveyData)
 
-    expect(loadSurveyResultRepositorySpy.surveyResult).toEqual(surveyResult)
+    expect(loadSurveyResultRepositorySpy.result).toEqual(surveyResult)
   })
 })

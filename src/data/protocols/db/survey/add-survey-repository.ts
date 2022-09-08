@@ -6,5 +6,4 @@ export interface AddSurveyRepository {
 
 export namespace AddSurveyRepository {
   export type Params = AddSurvey.Params
-
 }
