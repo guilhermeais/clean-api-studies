@@ -3,6 +3,7 @@ import { Express } from 'express'
 import { GraphQLError } from 'graphql'
 import resolvers from '../graphql/resolvers'
 import typeDefs from '../graphql/type-defs'
+import schemaDirectives from '../graphql/directives'
 
 function checkError (error: GraphQLError, errorName: string): boolean {
   return (error.name === errorName || error.originalError.name === errorName)
@@ -25,11 +26,15 @@ export function setupApolloServer (app: Express): void {
   const server = new ApolloServer({
     resolvers,
     typeDefs,
+    schemaDirectives,
+    context: ({ req }) => ({ req }),
     plugins: [
       {
-        requestDidStart: async ({ request }) => {
+        requestDidStart: ({ request, response }) => {
           return {
-            willSendResponse: async ({ response, errors }) => handleErrors(response, errors)
+            willSendResponse: async ({ response, errors }) => {
+              return handleErrors(response, errors)
+            }
           }
         }
       }
