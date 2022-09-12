@@ -61,7 +61,7 @@ describe('Login GraphQL', () => {
       expect(res.data.login.name).toBe(mockAccount.name)
     })
 
-    test('should return UnauthorizedERror on invalid credentials', async () => {
+    test('should return UnauthorizedError on invalid credentials', async () => {
       const loginQuery = gql`
         query login($email: String!, $password: String!) {
           login(email: $email, password: $password) {
@@ -120,6 +120,41 @@ describe('Login GraphQL', () => {
 
       expect(res.data.signUp.accessToken).toBeTruthy()
       expect(res.data.signUp.name).toBe(mockAccount.name)
+    })
+    test('should return EmailInUseError if email is already in use', async () => {
+      const signUpMutation = gql`
+        mutation signUp($name: String!, $email: String!, $password: String!, $passwordConfirmation: String!) {
+          signUp(name: $name, email: $email, password: $password, passwordConfirmation: $passwordConfirmation) {
+            accessToken
+            name
+          }
+        }
+      `
+      const password = faker.datatype.uuid()
+      const mockAccount = {
+        name: faker.name.fullName(),
+        email: faker.internet.email(),
+        password,
+        passwordConfirmation: password
+      }
+
+      await accountCollection.insertOne(mockAccount)
+
+      const { mutate } = createTestClient({
+        apolloServer
+      })
+
+      const res: any = await mutate(signUpMutation, {
+        variables: {
+          name: mockAccount.name,
+          email: mockAccount.email,
+          password: mockAccount.password,
+          passwordConfirmation: mockAccount.passwordConfirmation
+        }
+      })
+
+      expect(res.data).toBeFalsy()
+      expect(res.errors[0].message).toBe('The received email is already in use')
     })
   })
 })
