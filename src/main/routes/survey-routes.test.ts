@@ -8,7 +8,7 @@ import env from '../config/env'
 let surveyCollection: Collection
 let accountCollection: Collection
 
-async function makeAccessToken (role?: string): Promise<string> {
+async function mockAccessToken (role?: string): Promise<string> {
   const result = await accountCollection.insertOne({
     name: 'Guilherme Teixeira Ais',
     email: 'guilherme.teixeira@gmail.com',
@@ -70,7 +70,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 403 on add survey with invalid role', async () => {
-      const accessToken = await makeAccessToken()
+      const accessToken = await mockAccessToken()
 
       await request(app)
         .post('/api/surveys')
@@ -91,7 +91,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 204 on add survey with valid access token', async () => {
-      const accessToken = await makeAccessToken('admin')
+      const accessToken = await mockAccessToken('admin')
 
       await request(app)
         .post('/api/surveys')
@@ -134,7 +134,7 @@ describe('Survey Routes', () => {
           ]
         }
       ])
-      const accessToken = await makeAccessToken()
+      const accessToken = await mockAccessToken()
 
       await request(app)
         .get('/api/surveys')

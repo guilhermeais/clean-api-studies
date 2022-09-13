@@ -7,6 +7,7 @@ export function makeApolloServer (): ApolloServer {
   return new ApolloServer({
     resolvers,
     typeDefs,
-    schemaDirectives
+    schemaDirectives,
+    context: ({ req }) => ({ req })
   })
 }
