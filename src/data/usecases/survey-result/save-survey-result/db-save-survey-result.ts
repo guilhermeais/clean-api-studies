@@ -1,6 +1,4 @@
 import {
-  SaveSurveyResultParams,
-  SurveyResultModel,
   SaveSurveyResultRepository,
   SaveSurveyResult,
   LoadSurveyResultRepository
@@ -12,7 +10,7 @@ export class DbSaveSurveyResult implements SaveSurveyResult {
     private readonly loadSurveyResultRepository: LoadSurveyResultRepository
   ) {}
 
-  async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
+  async save (data: SaveSurveyResult.Params): Promise<SaveSurveyResult.Result> {
     await this.saveSurveyResultRepository.save(data)
     const surveyResult = await this.loadSurveyResultRepository.loadBySurveyId(data.surveyId, data.accountId)
     return surveyResult

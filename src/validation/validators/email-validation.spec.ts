@@ -1,6 +1,5 @@
-import { mockAccount } from '@/domain/test'
+import { mockAddAccountParams } from '@/domain/test'
 import { InvalidParamError } from '@/presentation/errors'
-import { HttpRequest } from '@/presentation/protocols'
 import { EmailValidatorSpy } from '@/validation/test'
 import { EmailValidation } from './email-validation'
 
@@ -9,8 +8,8 @@ type SutTypes = {
   emailValidatorSpy: EmailValidatorSpy
 }
 
-function mockRequest (): HttpRequest {
-  const account = mockAccount()
+function mockRequest (): any {
+  const account = mockAddAccountParams()
   return {
     body: {
       ...account,

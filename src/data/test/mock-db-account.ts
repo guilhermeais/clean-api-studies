@@ -1,37 +1,53 @@
-import { mockAccount } from '@/domain/test'
+import { faker } from '@faker-js/faker'
 import { AddAccountRepository } from '../protocols/db/account/add-account-repository'
 import { LoadAccountByTokenRepository } from '../protocols/db/account/load-account-by-token-repository'
 import { UpdateAccessTokenRepository } from '../protocols/db/account/update-access-token-repository'
-import { AccountModel, AddAccountParams, LoadAccountByEmailRepository } from '../usecases/account/add-account/db-add-account-protocols'
+import { CheckAccountByEmailRepository, LoadAccountByEmailRepository } from '../usecases/account/add-account/db-add-account-protocols'
 
 export class AddAccountRepositorySpy implements AddAccountRepository {
-  account = mockAccount()
-  addAccountParams: AddAccountParams
-  async add (accountData: AddAccountParams): Promise<AccountModel> {
+  isValid = true
+  addAccountParams: AddAccountRepository.Params
+  async add (accountData: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
     this.addAccountParams = accountData
-    return await Promise.resolve(this.account)
+    return await Promise.resolve(this.isValid)
   }
 }
 
 export class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailRepository {
-  account = mockAccount()
+  result = {
+    id: faker.datatype.uuid(),
+    name: faker.name.fullName(),
+    password: faker.internet.password()
+  }
+
   email: string
-  async loadByEmail (email: string): Promise<AccountModel> {
+  async loadByEmail (email: string): Promise<LoadAccountByEmailRepository.Result> {
     this.email = email
-    return await Promise.resolve(this.account)
+    return await Promise.resolve(this.result)
+  }
+}
+
+export class CheckAccountByEmailRepositorySpy implements CheckAccountByEmailRepository {
+  result = false
+  email: string
+
+  async checkByEmail (email: string): Promise<CheckAccountByEmailRepository.Result> {
+    this.email = email
+    return await Promise.resolve(this.result)
   }
 }
 
 export class LoadAccountByTokenRepositorySpy implements LoadAccountByTokenRepository {
-  account = mockAccount()
-  token: string
-  role: string
+  result = {
+    id: faker.datatype.uuid()
+  }
 
-  async loadByToken (token: string, role?: string): Promise<AccountModel> {
-    this.token = token
-    this.role = role
+  loadAccountByTokenRepositoryParams: LoadAccountByTokenRepository.Params
 
-    return await Promise.resolve(this.account)
+  async loadByToken (loadAccountByTokenRepositoryParams: LoadAccountByTokenRepository.Params): Promise<LoadAccountByTokenRepository.Result> {
+    this.loadAccountByTokenRepositoryParams = loadAccountByTokenRepositoryParams
+
+    return await Promise.resolve(this.result)
   }
 }
 

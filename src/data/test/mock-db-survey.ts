@@ -1,24 +1,45 @@
 import { mockSurvey, mockSurveys } from '@/domain/test'
+import { faker } from '@faker-js/faker'
+import { CheckSurveyByIdRepository, LoadSurveyByIdRepository, LoadAnswersBySurveyRepository } from '../protocols/db/survey'
 import { AddSurveyRepository } from '../protocols/db/survey/add-survey-repository'
-import { LoadSurveyByIdRepository } from '../protocols/db/survey/load-survey-by-id-repository'
 import { LoadSurveysRepository } from '../protocols/db/survey/load-surveys-repository'
-import { AddSurveyParams } from '../usecases/survey/add-survey/db-add-survey-protocols'
-import { SurveyModel } from '../usecases/survey/load-survey-by-id/db-load-survey-by-id-protocols'
+import { SurveyModel } from '../usecases/survey/load-answers-by-survey/db-load-answers-by-survey-protocols'
 
 export class AddSurveyRepositorySpy implements AddSurveyRepository {
-  addSurveyParams: AddSurveyParams
-  async add (data: AddSurveyParams): Promise<void> {
+  addSurveyParams: AddSurveyRepository.Params
+  async add (data: AddSurveyRepository.Params): Promise<void> {
     this.addSurveyParams = data
     return await Promise.resolve()
   }
 }
 
 export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
-  survey = mockSurvey()
+  result = mockSurvey()
   id: string
-  async loadById (id: string): Promise<SurveyModel> {
+  async loadById (id: string): Promise<LoadSurveyByIdRepository.Result> {
     this.id = id
-    return await Promise.resolve(this.survey)
+    return await Promise.resolve(this.result)
+  }
+}
+
+export class LoadAnswersBySurveyRepositorySpy implements LoadAnswersBySurveyRepository {
+  result = [
+    faker.random.word(),
+    faker.random.word()
+  ]
+
+  id: string
+  async loadAnswers (id: string): Promise<LoadAnswersBySurveyRepository.Result> {
+    this.id = id
+    return await Promise.resolve(this.result)
+  }
+}
+export class CheckSurveyByIdRepositorySpy implements CheckSurveyByIdRepository {
+  result = true
+  id: string
+  async checkById (id: string): Promise<CheckSurveyByIdRepository.Result> {
+    this.id = id
+    return await Promise.resolve(this.result)
   }
 }
 

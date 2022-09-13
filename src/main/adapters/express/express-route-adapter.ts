@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
-import { Controller, HttpRequest } from '@/presentation/protocols'
+import { Controller } from '@/presentation/protocols'
 
 export function adaptRoute (controller: Controller) {
   return async function (req: Request, res: Response): Promise<void> {
-    const httpRequest: HttpRequest = {
-      body: req.body,
-      params: req.params,
+    const httpRequest: any = {
+      ...(req.body || {}),
+      ...(req.params || {}),
       accountId: req.accountId
     }
     try {
@@ -20,7 +20,7 @@ export function adaptRoute (controller: Controller) {
       })
     } catch (error) {
       res.status(500).json({
-        message: error.message
+        error: error.message
       })
     }
   }

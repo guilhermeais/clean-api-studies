@@ -1,24 +1,25 @@
-import { mockAccount } from '@/domain/test'
-import { AccountModel, AddAccount, AddAccountParams } from '../controllers/login/signup/signup-controller-protocols'
+import { faker } from '@faker-js/faker'
+import { AddAccount } from '../controllers/login/signup/signup-controller-protocols'
 import { LoadAccountByToken } from '../middlewares/auth-middleware-protocols'
 
 export class AddAccountSpy implements AddAccount {
-  addAccountParams: AddAccountParams
-  account = mockAccount()
-  async add (account: AddAccountParams): Promise<AccountModel> {
+  addAccountParams: AddAccount.Params
+  isValid = true
+  async add (account: AddAccount.Params): Promise<AddAccount.Result> {
     this.addAccountParams = account
 
-    return await Promise.resolve(this.account)
+    return await Promise.resolve(this.isValid)
   }
 }
 
 export class LoadAccountByTokenSpy implements LoadAccountByToken {
-  accessToken: string
-  role: string
-  account = mockAccount()
-  async load (accessToken: string, role?: string): Promise<AccountModel> {
-    this.accessToken = accessToken
-    this.role = role
-    return await Promise.resolve(this.account)
+  loadAccountByTokenParams: LoadAccountByToken.Params
+  result = {
+    id: faker.datatype.uuid()
+  }
+
+  async load (loadAccountByTokenParams: LoadAccountByToken.Params): Promise<LoadAccountByToken.Result> {
+    this.loadAccountByTokenParams = loadAccountByTokenParams
+    return await Promise.resolve(this.result)
   }
 }

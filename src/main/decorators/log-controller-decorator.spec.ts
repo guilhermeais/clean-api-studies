@@ -1,17 +1,14 @@
 import { LogErrorRepositorySpy } from '@/data/test'
-import { mockAccount } from '@/domain/test'
 import { serverError } from '@/presentation/helpers/http/http-helper'
-import { HttpRequest, HttpResponse } from '@/presentation/protocols'
+import { HttpResponse } from '@/presentation/protocols'
 import { ControllerSpy } from '@/presentation/test'
 import { faker } from '@faker-js/faker'
 import { LogControllerDecorator } from './log-controller-decorator'
 
-function mockRequest (): HttpRequest {
-  const account = mockAccount()
+function mockRequest (): any {
   return {
     body: {
-      ...account,
-      passwordConfirmation: account.password
+      [faker.random.word()]: faker.random.word()
     }
   }
 }

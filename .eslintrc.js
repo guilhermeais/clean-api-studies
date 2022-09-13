@@ -8,7 +8,8 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/strict-boolean-expressions': 'off',
-    '@typescript-eslint/consistent-type-definitions': 'off'
+    '@typescript-eslint/consistent-type-definitions': 'off',
+    '@typescript-eslint/no-namespace': 'off'
   },
   root: true
 }
