@@ -10,5 +10,8 @@
     "[typescript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
     },
-    "typescript.format.insertSpaceBeforeFunctionParenthesis": true
+    "typescript.format.insertSpaceBeforeFunctionParenthesis": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    }
 }
